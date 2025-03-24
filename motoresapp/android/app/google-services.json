@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "940328304338",
+    "project_id": "motoresapp-cb1a0",
+    "storage_bucket": "motoresapp-cb1a0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940328304338:android:e4c042883e8f34cdd1f70b",
+        "android_client_info": {
+          "package_name": "com.mapp.motoresapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGFHFebHJdccAglYjyPZ2pNZykzF0kQvg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
