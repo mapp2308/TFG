@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:motor_es/screens/login.dart';
+import 'package:motor_es/screens/acceso/login.dart';
 
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePageAdmin extends StatelessWidget {
+  const HomePageAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Text('¡Hola ${user?.email ?? "Mi Loco"}!'),
+        child: Text('Adiós ${user?.email ?? "Mi Loco"}!'),
       ),
     );
   }
