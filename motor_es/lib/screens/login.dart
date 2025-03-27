@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:motor_es/screens/prueb.dart';
+import 'package:motor_es/screens/prueba.dart'; // HomePage
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,11 +26,13 @@ class _LoginPageState extends State<LoginPage> {
       UserCredential credential;
 
       if (isLogin) {
+        // Iniciar sesión
         credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
       } else {
+        // Registro
         credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
@@ -37,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
 
         final uid = credential.user!.uid;
 
+        // Por defecto, no es admin
         await FirebaseFirestore.instance.collection('user').doc(uid).set({
           'uid': uid,
           'nombre': nombreController.text.trim(),
@@ -47,10 +51,25 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
-      );
+      // Verificar si es admin
+      final uid = credential.user!.uid;
+      final userDoc = await FirebaseFirestore.instance.collection('user').doc(uid).get();
+print('Datos del usuario: ${userDoc.data()}');
+final isAdmin = userDoc.data()?['isAdmin'] ?? false;
+print('isAdmin detectado: $isAdmin');
+
+
+      if (isAdmin) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePageAdmin()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePage()),
+        );
+      }
     } on FirebaseAuthException catch (e) {
       setState(() => error = e.message ?? 'Error desconocido');
     }

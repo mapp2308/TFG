@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:motor_es/screens/login.dart';
-import 'package:motor_es/screens/prueb.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,11 +24,6 @@ class MotorEsApp extends StatelessWidget {
             return const Scaffold(
               body: Center(child: CircularProgressIndicator()),
             );
-          }
-
-          // Si el usuario está logueado, va a HomePage
-          if (snapshot.hasData) {
-            return const HomePage(); // pantalla principal
           }
 
           // Si no está logueado, va a LoginPage
