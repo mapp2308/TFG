@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:motor_es/screens/acceso/recupassword.dart';
 import 'package:motor_es/screens/acceso/register.dart';
-import 'package:motor_es/screens/user/prueb.dart';
 import 'package:motor_es/screens/admin/prueba.dart';
+import 'package:motor_es/screens/user/home_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -94,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => isAdmin ? const HomePageAdmin() : const HomePage(),
+          builder: (_) => isAdmin ? const HomePageAdmin() : const HomeScreen(),
         ),
       );
     } on FirebaseAuthException catch (e) {

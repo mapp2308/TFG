@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:motor_es/screens/user/prueb.dart';
+import 'package:motor_es/screens/user/home_screen.dart';
 
 class RegisterForm extends StatefulWidget {
   final VoidCallback onToggle;
@@ -39,7 +39,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } on FirebaseAuthException catch (e) {
       setState(() => error = e.message ?? 'Error');
