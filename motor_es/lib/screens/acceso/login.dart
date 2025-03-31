@@ -2,10 +2,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:motor_es/screens/acceso/recupassword.dart';
 import 'package:motor_es/screens/acceso/register.dart';
-import 'package:motor_es/screens/admin/prueba.dart';
-import 'package:motor_es/screens/user/home_screen.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -91,12 +91,8 @@ class _LoginFormState extends State<LoginForm> {
 
       final isAdmin = userDoc.data()?['isAdmin'] ?? false;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => isAdmin ? const HomePageAdmin() : const HomeScreen(),
-        ),
-      );
+      // ✅ Navegación usando GoRouter
+      context.go(isAdmin ? '/admin/home' : '/user/home');
     } on FirebaseAuthException catch (e) {
       setState(() => error = e.message ?? 'Error');
     } finally {

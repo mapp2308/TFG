@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:motor_es/widgets/custom_buttom_navigation.dart';
 import 'package:motor_es/widgets/widget_evento.dart';
+
 
 const Color azulMarino = Color(0xFF0D47A1);
 const Color moradoOscuro = Color(0xFF3E1C78);
@@ -70,7 +72,7 @@ class _HomeScreenScreenState extends State<HomeScreen> {
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: rojoEvento, // Título rojo
+                    color: rojoEvento,
                   ),
                 ),
               ],
@@ -101,7 +103,8 @@ class _HomeScreenScreenState extends State<HomeScreen> {
 
                 return ListView.builder(
                   itemCount: eventos.length,
-                  itemBuilder: (context, index) => EventoCard(evento: eventos[index]),
+                  itemBuilder: (context, index) =>
+                      EventoCard(evento: eventos[index]),
                 );
               },
             ),
@@ -130,13 +133,16 @@ class _HomeScreenScreenState extends State<HomeScreen> {
           color: backgroundColor,
           child: Column(
             children: [
-              seccionEventos("Eventos que asistirás", Icons.event_available, asistirIds),
+              seccionEventos(
+                  "Eventos que asistirás", Icons.event_available, asistirIds),
               const SizedBox(height: 10),
-              seccionEventos("Eventos favoritos", Icons.favorite, favoritosIds),
+              seccionEventos(
+                  "Eventos favoritos", Icons.favorite, favoritosIds),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: const CustomBottomNavigation(),
     );
   }
 }

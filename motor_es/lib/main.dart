@@ -1,20 +1,30 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:motor_es/screens/acceso/login.dart'; // o donde esté tu LoginPage
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:motor_es/configuracion/router/app_router.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  final router = await createAppRouter();
+  runApp(
+    ProviderScope(
+      child: MyApp(router: router),
+    ),
+  );
+  
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GoRouter router;
+  const MyApp({super.key, required  this.router});
 
   // Colores para el tema claro
   static const Color azulMarino = Color(0xFF0D47A1);
   static const Color rojo = Color(0xFFE53935);
+
 
   // Colores para el tema oscuro
   static const Color morado = Color(0xFF6A1B9A);
@@ -22,14 +32,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MotorEs',
+    
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system, // Usa claro/oscuro según el sistema
+      title: 'MotorEs',
+      themeMode: ThemeMode.system,
+      routerConfig: router, // 👈 Se usa el GoRouter aquí
+
+      // Tema claro
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: azulMarino,
-        scaffoldBackgroundColor: azulMarino.withOpacity(0.05),
+        scaffoldBackgroundColor: azulMarino,
         appBarTheme: const AppBarTheme(backgroundColor: azulMarino, foregroundColor: Colors.white),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(backgroundColor: rojo, foregroundColor: Colors.white),
@@ -39,6 +53,8 @@ class MyApp extends StatelessWidget {
           prefixIconColor: azulMarino,
         ),
       ),
+
+      // Tema oscuro
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: morado,
@@ -52,7 +68,6 @@ class MyApp extends StatelessWidget {
           prefixIconColor: morado,
         ),
       ),
-      home: const LoginPage(),
     );
   }
 }
