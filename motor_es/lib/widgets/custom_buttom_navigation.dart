@@ -11,7 +11,7 @@ class CustomBottomNavigation extends StatefulWidget {
 class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
   final List<String> _routes = [
     '/user/home',
-    '/admin/home',
+    '/user/settings',
   ];
 
   final List<IconData> _selectedIcons = [

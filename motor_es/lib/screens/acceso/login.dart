@@ -1,11 +1,9 @@
-// 📁 login_page.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motor_es/screens/acceso/recupassword.dart';
 import 'package:motor_es/screens/acceso/register.dart';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.person, size: 64, color: Colors.red),
+                  const Icon(Icons.person, size: 64, color: Colors.red),
                   const SizedBox(height: 16),
                   Text(
                     isLogin ? 'Iniciar sesión' : 'Registrarse',
@@ -53,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                       ? LoginForm(onToggle: toggleForm)
                       : RegisterForm(onToggle: toggleForm),
                   const SizedBox(height: 12),
-                  if (isLogin) RecoverPasswordWidget(),
+                  if (isLogin)  RecoverPasswordWidget(),
                 ],
               ),
             ),
@@ -63,6 +61,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
 class LoginForm extends StatefulWidget {
   final VoidCallback onToggle;
   const LoginForm({super.key, required this.onToggle});
@@ -78,8 +77,19 @@ class _LoginFormState extends State<LoginForm> {
   String error = '';
   final Color azulMarino = const Color(0xFF0D47A1);
 
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> loginUser() async {
-    setState(() => loading = true);
+    setState(() {
+      loading = true;
+      error = '';
+    });
+
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
@@ -88,15 +98,24 @@ class _LoginFormState extends State<LoginForm> {
 
       final uid = credential.user!.uid;
       final userDoc = await FirebaseFirestore.instance.collection('user').doc(uid).get();
-
       final isAdmin = userDoc.data()?['isAdmin'] ?? false;
 
-      // ✅ Navegación usando GoRouter
+      if (!mounted) return;
       context.go(isAdmin ? '/admin/home' : '/user/home');
     } on FirebaseAuthException catch (e) {
-      setState(() => error = e.message ?? 'Error');
+      if (!mounted) return;
+      setState(() {
+        error = e.message ?? 'Error desconocido';
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        error = 'Error inesperado: $e';
+      });
     } finally {
-      setState(() => loading = false);
+      if (mounted) {
+        setState(() => loading = false);
+      }
     }
   }
 
@@ -106,6 +125,7 @@ class _LoginFormState extends State<LoginForm> {
       children: [
         TextField(
           controller: emailController,
+          keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(
             labelText: 'Correo electrónico',
             prefixIcon: Icon(Icons.email_outlined),
@@ -128,7 +148,11 @@ class _LoginFormState extends State<LoginForm> {
           child: ElevatedButton.icon(
             onPressed: loading ? null : loginUser,
             icon: loading
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  )
                 : const Icon(Icons.login),
             label: const Text('Ingresar'),
           ),

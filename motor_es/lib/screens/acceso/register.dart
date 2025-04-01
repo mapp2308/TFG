@@ -1,8 +1,7 @@
-// 📁 register_form.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:motor_es/screens/user/home_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterForm extends StatefulWidget {
   final VoidCallback onToggle;
@@ -19,32 +18,61 @@ class _RegisterFormState extends State<RegisterForm> {
   bool loading = false;
   String error = '';
 
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    nombreController.dispose();
+    super.dispose();
+  }
+
   Future<void> registerUser() async {
-    setState(() => loading = true);
+    setState(() {
+      loading = true;
+      error = '';
+    });
+
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final nombre = nombreController.text.trim();
+
+    if (email.isEmpty || password.isEmpty || nombre.isEmpty) {
+      setState(() {
+        error = 'Por favor, completa todos los campos.';
+        loading = false;
+      });
+      return;
+    }
+
     try {
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
+        email: email,
+        password: password,
       );
 
       final uid = credential.user!.uid;
+
       await FirebaseFirestore.instance.collection('user').doc(uid).set({
         'uid': uid,
-        'nombre': nombreController.text.trim(),
-        'email': emailController.text.trim(),
+        'nombre': nombre,
+        'email': email,
         'isAdmin': false,
         'asistir': [],
         'favoritos': [],
       });
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
+      if (!mounted) return;
+      context.go('/user/home'); // ✅ Redirección segura con GoRouter
     } on FirebaseAuthException catch (e) {
-      setState(() => error = e.message ?? 'Error');
+      setState(() {
+        error = e.message ?? 'Ocurrió un error durante el registro.';
+      });
+    } catch (e) {
+      setState(() {
+        error = 'Error inesperado: $e';
+      });
     } finally {
-      setState(() => loading = false);
+      if (mounted) setState(() => loading = false);
     }
   }
 
@@ -63,6 +91,7 @@ class _RegisterFormState extends State<RegisterForm> {
         const SizedBox(height: 16),
         TextField(
           controller: emailController,
+          keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(
             labelText: 'Correo electrónico',
             prefixIcon: Icon(Icons.email_outlined),
@@ -85,7 +114,11 @@ class _RegisterFormState extends State<RegisterForm> {
           child: ElevatedButton.icon(
             onPressed: loading ? null : registerUser,
             icon: loading
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  )
                 : const Icon(Icons.person_add),
             label: const Text('Registrarse'),
           ),
@@ -98,7 +131,7 @@ class _RegisterFormState extends State<RegisterForm> {
         TextButton(
           onPressed: widget.onToggle,
           child: const Text('¿Ya tienes cuenta? Inicia sesión'),
-        )
+        ),
       ],
     );
   }

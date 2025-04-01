@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
-import 'package:motor_es/widgets/custom_buttom_navigation.dart'; // ✅ Importar go_router
 
 class HomePageAdmin extends StatelessWidget {
   const HomePageAdmin({super.key});
+
+  Future<void> _cerrarSesion(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    if (context.mounted) {
+      context.go('/login');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,19 +22,13 @@ class HomePageAdmin extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-
-              // ✅ Redirige a la pantalla de login usando GoRouter
-              context.go('/login');
-            },
+            onPressed: () => _cerrarSesion(context),
           ),
         ],
       ),
       body: Center(
         child: Text('Adiós ${user?.email ?? "Mi Loco"}!'),
       ),
-      bottomNavigationBar: const CustomBottomNavigation(), // ✅ Añadido aquí
     );
   }
 }

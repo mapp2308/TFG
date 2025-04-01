@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motor_es/screens/acceso/login.dart';
 import 'package:motor_es/screens/admin/prueba.dart';
+import 'package:motor_es/screens/user/ajustes.dart';
 import 'package:motor_es/screens/user/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -31,6 +32,10 @@ Future<GoRouter> createAppRouter() async {
       GoRoute(
         path: '/admin/home',
         builder: (context, state) => const HomePageAdmin(),
+      ),
+      GoRoute(
+        path: '/user/settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
     ],
   );

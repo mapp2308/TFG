@@ -25,11 +25,6 @@ class MyApp extends StatelessWidget {
   static const Color azulMarino = Color(0xFF0D47A1);
   static const Color rojo = Color(0xFFE53935);
 
-
-  // Colores para el tema oscuro
-  static const Color morado = Color(0xFF6A1B9A);
-  static const Color vinotinto = Color(0xFF8E2430);
-
   @override
   Widget build(BuildContext context) {
     
@@ -51,21 +46,6 @@ class MyApp extends StatelessWidget {
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
           prefixIconColor: azulMarino,
-        ),
-      ),
-
-      // Tema oscuro
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: morado,
-        scaffoldBackgroundColor: Colors.black,
-        appBarTheme: const AppBarTheme(backgroundColor: morado, foregroundColor: Colors.white),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(backgroundColor: vinotinto, foregroundColor: Colors.white),
-        ),
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(),
-          prefixIconColor: morado,
         ),
       ),
     );
