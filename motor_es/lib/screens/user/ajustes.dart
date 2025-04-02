@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
+import 'package:motor_es/configuracion/theme/theme.dart';
 import 'package:motor_es/widgets/custom_buttom_navigation.dart';
 
-const Color azulMarino = Color(0xFF0D47A1);
-const Color moradoOscuro = Color(0xFF3E1C78);
 const Color rojoEvento = Color(0xFFE53935);
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> cambiarContrasena() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -41,11 +41,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final confirmado = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("¿Estás seguro?"),
-        content: const Text("Esta acción eliminará tu cuenta y todos tus datos asociados."),
+        title: const Text("¿Estás seguro?", style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.grey[900],
+        content: const Text("Esta acción eliminará tu cuenta y todos tus datos asociados.", style: TextStyle(color: Colors.white)),
         actions: [
           TextButton(
-            child: const Text("Cancelar"),
+            child: const Text("Cancelar", style: TextStyle(color: Colors.white)),
             onPressed: () => Navigator.pop(context, false),
           ),
           TextButton(
@@ -58,10 +59,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     if (confirmado != true) return;
 
-    final uid = user.uid;
-
     try {
-      await FirebaseFirestore.instance.collection('user').doc(uid).delete();
+      await FirebaseFirestore.instance.collection('user').doc(user.uid).delete();
       await user.delete();
       if (!mounted) return;
       context.go('/login');
@@ -84,56 +83,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final favoritos = List<String>.from(docUser.data()?['favoritos'] ?? []);
     final asistir = List<String>.from(docUser.data()?['asistir'] ?? []);
 
-    _mostrarModalUsuario(user.email, asistir.length, favoritos.length);
-  }
+    final eventosFavoritos = favoritos.length;
+    final eventosAsistidos = asistir.length;
 
-  void _mostrarModalUsuario(String? email, int eventosAsistidos, int eventosFavoritos) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: Colors.grey[900],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) {
         return Padding(
           padding: const EdgeInsets.all(20),
-          child: Wrap(
-            runSpacing: 16,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Center(
-                child: Text(
-                  "Tu cuenta",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Center(
+                child: Text("Tu cuenta",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+              ),
+              SizedBox(height: 16),
+              Divider(color: Colors.white24),
+
+              Text("Correo", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              SizedBox(height: 4),
+              Text(user.email ?? "Correo no disponible", style: TextStyle(color: Colors.white)),
+              SizedBox(height: 16),
+
+              Text("Eventos asistidos", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              SizedBox(height: 4),
+              Text("$eventosAsistidos", style: TextStyle(color: Colors.white)),
+              SizedBox(height: 16),
+
+              Text("Eventos favoritos", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              SizedBox(height: 4),
+              Text("$eventosFavoritos", style: TextStyle(color: Colors.white)),
+              SizedBox(height: 24),
+
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: eliminarCuenta,
+                  icon: const Icon(Icons.delete, color: Colors.white),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: rojoEvento,
+                    foregroundColor: Colors.white, // 👈 fuerza el color del texto e ícono
+                  ),
+                  label: const Text("Eliminar cuenta"),
                 ),
-              ),
-              const Divider(),
-              Row(
-                children: [
-                  const Icon(Icons.email),
-                  const SizedBox(width: 10),
-                  Expanded(child: Text(email ?? "Correo no disponible")),
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(Icons.event_available, color: Colors.green),
-                  const SizedBox(width: 10),
-                  Text("Eventos asistidos: $eventosAsistidos"),
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(Icons.favorite, color: Colors.red),
-                  const SizedBox(width: 10),
-                  Text("Eventos favoritos: $eventosFavoritos"),
-                ],
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton.icon(
-                onPressed: eliminarCuenta,
-                icon: const Icon(Icons.delete),
-                style: ElevatedButton.styleFrom(backgroundColor: rojoEvento),
-                label: const Text("Eliminar cuenta"),
               ),
             ],
           ),
@@ -145,7 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void mostrarAyudaSubirEvento() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: Colors.grey[900],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -158,13 +155,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Center(
                 child: Text(
                   "¿Cómo subir mi evento?",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
-              Divider(),
+              Divider(color: Colors.white24),
               Text(
-                "Para conseguir el poder subir tu evento escribe un correo a maperaza2005@gmail.com donde se explicará cuánto cuesta la suscripción y cómo funciona la interfaz de administrador. ¡Muchas gracias!",
-                style: TextStyle(fontSize: 16),
+                "Para subir tu evento, escribe un correo a maperaza2005@gmail.com donde se te explicará el proceso. ¡Gracias!",
+                style: TextStyle(fontSize: 16, color: Colors.white),
               ),
               SizedBox(height: 10),
             ],
@@ -176,11 +173,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? moradoOscuro : azulMarino;
+    final isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -189,18 +185,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               const Text(
                 "Ajustes",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(height: 20),
 
-              ListTile(
-                leading: const Icon(Icons.lock, color: Colors.white),
-                title: const Text("Cambiar contraseña", style: TextStyle(color: Colors.white)),
-                onTap: cambiarContrasena,
+              const ListTile(
+                leading: Icon(Icons.lock, color: Colors.white),
+                title: Text("Cambiar contraseña", style: TextStyle(color: Colors.white)),
               ),
               const Divider(color: Colors.white24),
 
@@ -215,6 +206,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 leading: const Icon(Icons.help_outline, color: Colors.white),
                 title: const Text("¿Cómo subir mi evento?", style: TextStyle(color: Colors.white)),
                 onTap: mostrarAyudaSubirEvento,
+              ),
+              const Divider(color: Colors.white24),
+
+              SwitchListTile(
+                title: const Text("Tema oscuro", style: TextStyle(color: Colors.white)),
+                secondary: const Icon(Icons.dark_mode, color: Colors.white),
+                value: isDarkMode,
+                onChanged: (_) => ref.read(themeModeProvider.notifier).toggleTheme(),
               ),
               const Divider(color: Colors.white24),
 

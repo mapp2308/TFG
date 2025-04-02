@@ -4,9 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:motor_es/widgets/custom_buttom_navigation.dart';
 import 'package:motor_es/widgets/widget_evento.dart';
 
-
-const Color azulMarino = Color(0xFF0D47A1);
-const Color moradoOscuro = Color(0xFF3E1C78);
 const Color rojoEvento = Color(0xFFE53935);
 
 class HomeScreen extends StatefulWidget {
@@ -22,7 +19,6 @@ class _HomeScreenScreenState extends State<HomeScreen> {
 
   List<String> favoritosIds = [];
   List<String> asistirIds = [];
-
   bool loading = true;
 
   @override
@@ -56,6 +52,8 @@ class _HomeScreenScreenState extends State<HomeScreen> {
   }
 
   Widget seccionEventos(String titulo, IconData icono, List<String> ids) {
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +67,7 @@ class _HomeScreenScreenState extends State<HomeScreen> {
                 const SizedBox(width: 8),
                 Text(
                   titulo,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: rojoEvento,
@@ -90,12 +88,12 @@ class _HomeScreenScreenState extends State<HomeScreen> {
                 final eventos = snapshot.data ?? [];
 
                 if (eventos.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Padding(
-                      padding: EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(24),
                       child: Text(
                         "No hay eventos almacenados aquí, de momento...",
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                        style: TextStyle(fontSize: 16, color: textColor),
                       ),
                     ),
                   );
@@ -116,8 +114,7 @@ class _HomeScreenScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? moradoOscuro : azulMarino;
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
     if (loading) {
       return const Scaffold(
@@ -133,11 +130,9 @@ class _HomeScreenScreenState extends State<HomeScreen> {
           color: backgroundColor,
           child: Column(
             children: [
-              seccionEventos(
-                  "Eventos que asistirás", Icons.event_available, asistirIds),
+              seccionEventos("Eventos que asistirás", Icons.event_available, asistirIds),
               const SizedBox(height: 10),
-              seccionEventos(
-                  "Eventos favoritos", Icons.favorite, favoritosIds),
+              seccionEventos("Eventos favoritos", Icons.favorite, favoritosIds),
             ],
           ),
         ),

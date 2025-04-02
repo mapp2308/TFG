@@ -13,7 +13,6 @@ class EventoCard extends StatelessWidget {
     final Timestamp fechaTimestamp = evento['fecha'];
     final DateTime fecha = fechaTimestamp.toDate();
 
-    // Manualmente los meses en español
     const meses = [
       'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
       'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
@@ -22,45 +21,51 @@ class EventoCard extends StatelessWidget {
     final String dia = fecha.day.toString();
     final String mes = meses[fecha.month - 1];
 
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+    final subtleColor = Theme.of(context).textTheme.bodySmall?.color;
+
     return Card(
       elevation: 4,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: Theme.of(context).cardColor,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Row(
           children: [
-            // Fecha (Día grande y mes pequeño)
+            // Fecha
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   dia,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
+                    color: textColor,
                   ),
                 ),
                 Text(
                   mes.toUpperCase(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey,
+                    color: subtleColor,
                   ),
                 ),
               ],
             ),
             const SizedBox(width: 16),
-            // Información del evento
+            // Info evento
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     nombre,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
+                      color: textColor,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -68,9 +73,9 @@ class EventoCard extends StatelessWidget {
                     descripcion.length > 60
                         ? '${descripcion.substring(0, 60)}...'
                         : descripcion,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: Colors.black87,
+                      color: subtleColor,
                     ),
                   ),
                 ],
