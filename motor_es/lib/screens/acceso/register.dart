@@ -62,7 +62,7 @@ class _RegisterFormState extends State<RegisterForm> {
       });
 
       if (!mounted) return;
-      context.go('/user/home'); // ✅ Redirección segura con GoRouter
+      context.go('/user/home');
     } on FirebaseAuthException catch (e) {
       setState(() {
         error = e.message ?? 'Ocurrió un error durante el registro.';
@@ -84,9 +84,13 @@ class _RegisterFormState extends State<RegisterForm> {
           controller: nombreController,
           decoration: const InputDecoration(
             labelText: 'Nombre',
-            prefixIcon: Icon(Icons.person_outline),
+            labelStyle: TextStyle(color: Colors.black),
+            prefixIcon: Icon(Icons.person_outline, color: Colors.black),
             border: OutlineInputBorder(),
+            filled: true,
+            fillColor: Colors.white,
           ),
+          style: const TextStyle(color: Colors.black),
         ),
         const SizedBox(height: 16),
         TextField(
@@ -94,9 +98,13 @@ class _RegisterFormState extends State<RegisterForm> {
           keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(
             labelText: 'Correo electrónico',
-            prefixIcon: Icon(Icons.email_outlined),
+            labelStyle: TextStyle(color: Colors.black),
+            prefixIcon: Icon(Icons.email_outlined, color: Colors.black),
             border: OutlineInputBorder(),
+            filled: true,
+            fillColor: Colors.white,
           ),
+          style: const TextStyle(color: Colors.black),
         ),
         const SizedBox(height: 16),
         TextField(
@@ -104,9 +112,13 @@ class _RegisterFormState extends State<RegisterForm> {
           obscureText: true,
           decoration: const InputDecoration(
             labelText: 'Contraseña',
-            prefixIcon: Icon(Icons.lock_outline),
+            labelStyle: TextStyle(color: Colors.black),
+            prefixIcon: Icon(Icons.lock_outline, color: Colors.black),
             border: OutlineInputBorder(),
+            filled: true,
+            fillColor: Colors.white,
           ),
+          style: const TextStyle(color: Colors.black),
         ),
         const SizedBox(height: 24),
         SizedBox(
@@ -117,10 +129,17 @@ class _RegisterFormState extends State<RegisterForm> {
                 ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
                   )
-                : const Icon(Icons.person_add),
-            label: const Text('Registrarse'),
+                : const Icon(Icons.person_add, color: Colors.white),
+            label: const Text('Registrarse', style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Colors.white,
+            ),
           ),
         ),
         if (error.isNotEmpty)
@@ -130,7 +149,10 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
         TextButton(
           onPressed: widget.onToggle,
-          child: const Text('¿Ya tienes cuenta? Inicia sesión'),
+          child: const Text(
+            '¿Ya tienes cuenta? Inicia sesión',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ],
     );

@@ -73,103 +73,116 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  Future<void> mostrarDatosUsuario() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
+Future<void> mostrarDatosUsuario() async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
 
-    final docUser = await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
-    if (!mounted) return;
+  final docUser = await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
+  if (!mounted) return;
 
-    final favoritos = List<String>.from(docUser.data()?['favoritos'] ?? []);
-    final asistir = List<String>.from(docUser.data()?['asistir'] ?? []);
+  final favoritos = List<String>.from(docUser.data()?['favoritos'] ?? []);
+  final asistir = List<String>.from(docUser.data()?['asistir'] ?? []);
 
-    final eventosFavoritos = favoritos.length;
-    final eventosAsistidos = asistir.length;
+  final eventosFavoritos = favoritos.length;
+  final eventosAsistidos = asistir.length;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.grey[900],
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Text("Tu cuenta",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-              ),
-              SizedBox(height: 16),
-              Divider(color: Colors.white24),
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-              Text("Correo", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-              SizedBox(height: 4),
-              Text(user.email ?? "Correo no disponible", style: TextStyle(color: Colors.white)),
-              SizedBox(height: 16),
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) {
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text("Tu cuenta",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
+            ),
+            const SizedBox(height: 16),
+            Divider(color: isDarkMode ? Colors.white24 : Colors.black26),
 
-              Text("Eventos asistidos", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-              SizedBox(height: 4),
-              Text("$eventosAsistidos", style: TextStyle(color: Colors.white)),
-              SizedBox(height: 16),
+            Text("Correo", style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
+            const SizedBox(height: 4),
+            Text(user.email ?? "Correo no disponible", style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
+            const SizedBox(height: 16),
 
-              Text("Eventos favoritos", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-              SizedBox(height: 4),
-              Text("$eventosFavoritos", style: TextStyle(color: Colors.white)),
-              SizedBox(height: 24),
+            Text("Eventos asistidos", style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
+            const SizedBox(height: 4),
+            Text("$eventosAsistidos", style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
+            const SizedBox(height: 16),
 
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: eliminarCuenta,
-                  icon: const Icon(Icons.delete, color: Colors.white),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: rojoEvento,
-                    foregroundColor: Colors.white, // 👈 fuerza el color del texto e ícono
-                  ),
-                  label: const Text("Eliminar cuenta"),
+            Text("Eventos favoritos", style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
+            const SizedBox(height: 4),
+            Text("$eventosFavoritos", style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
+            const SizedBox(height: 24),
+
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: eliminarCuenta,
+                icon: const Icon(Icons.delete, color: Colors.white),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: rojoEvento,
+                  foregroundColor: Colors.white,
                 ),
+                label: const Text("Eliminar cuenta"),
               ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 
   void mostrarAyudaSubirEvento() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.grey[900],
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Wrap(
-            runSpacing: 16,
-            children: const [
-              Center(
-                child: Text(
-                  "¿Cómo subir mi evento?",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) {
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Wrap(
+          runSpacing: 16,
+          children: [
+            Center(
+              child: Text(
+                "¿Cómo subir mi evento?",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
-              Divider(color: Colors.white24),
-              Text(
-                "Para subir tu evento, escribe un correo a maperaza2005@gmail.com donde se te explicará el proceso. ¡Gracias!",
-                style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            Divider(color: isDarkMode ? Colors.white24 : Colors.black26),
+            Text(
+              "Para subir tu evento, escribe un correo a maperaza2005@gmail.com donde se te explicará el proceso. ¡Gracias!",
+              style: TextStyle(
+                fontSize: 16,
+                color: isDarkMode ? Colors.white : Colors.black,
               ),
-              SizedBox(height: 10),
-            ],
-          ),
-        );
-      },
-    );
-  }
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {

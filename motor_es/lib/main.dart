@@ -22,7 +22,6 @@ class MyApp extends ConsumerWidget {
   final GoRouter router;
   const MyApp({super.key, required this.router});
 
-  static const Color azulMarino = Color(0xFF0D47A1);
   static const Color rojo = Color(0xFFE53935);
 
   @override
@@ -38,10 +37,9 @@ class MyApp extends ConsumerWidget {
       // 🌞 TEMA CLARO
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: azulMarino,
-        scaffoldBackgroundColor: azulMarino,
+        scaffoldBackgroundColor: Colors.grey[900],
         appBarTheme: const AppBarTheme(
-          backgroundColor: azulMarino,
+          backgroundColor: Colors.black,
           foregroundColor: Colors.white,
         ),
         cardColor: Colors.white,

@@ -14,7 +14,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isLogin = true;
-  final Color azulMarino = const Color(0xFF0D47A1);
 
   void toggleForm() {
     setState(() => isLogin = !isLogin);
@@ -22,15 +21,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: azulMarino,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Card(
             elevation: 10,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            color: Colors.white,
+            color: const Color.fromARGB(255, 70, 66, 66),
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
@@ -43,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: azulMarino,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -51,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                       ? LoginForm(onToggle: toggleForm)
                       : RegisterForm(onToggle: toggleForm),
                   const SizedBox(height: 12),
-                  if (isLogin)  RecoverPasswordWidget(),
+                  if (isLogin) RecoverPasswordWidget(),
                 ],
               ),
             ),
@@ -75,7 +76,6 @@ class _LoginFormState extends State<LoginForm> {
   final passwordController = TextEditingController();
   bool loading = false;
   String error = '';
-  final Color azulMarino = const Color(0xFF0D47A1);
 
   @override
   void dispose() {
@@ -128,9 +128,13 @@ class _LoginFormState extends State<LoginForm> {
           keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(
             labelText: 'Correo electrónico',
-            prefixIcon: Icon(Icons.email_outlined),
+            labelStyle: TextStyle(color: Colors.black),
+            prefixIcon: Icon(Icons.email_outlined, color: Colors.black),
             border: OutlineInputBorder(),
+            filled: true,
+            fillColor: Colors.white,
           ),
+          style: const TextStyle(color: Colors.black),
         ),
         const SizedBox(height: 16),
         TextField(
@@ -138,9 +142,13 @@ class _LoginFormState extends State<LoginForm> {
           obscureText: true,
           decoration: const InputDecoration(
             labelText: 'Contraseña',
-            prefixIcon: Icon(Icons.lock_outline),
+            labelStyle: TextStyle(color: Colors.black),
+            prefixIcon: Icon(Icons.lock_outline, color: Colors.black),
             border: OutlineInputBorder(),
+            filled: true,
+            fillColor: Colors.white,
           ),
+          style: const TextStyle(color: Colors.black),
         ),
         const SizedBox(height: 24),
         SizedBox(
@@ -151,21 +159,37 @@ class _LoginFormState extends State<LoginForm> {
                 ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
                   )
-                : const Icon(Icons.login),
-            label: const Text('Ingresar'),
+                : const Icon(Icons.login, color: Colors.white),
+            label: const Text(
+              'Ingresar',
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Colors.white,
+            ),
           ),
         ),
         if (error.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 12),
-            child: Text(error, style: const TextStyle(color: Colors.red)),
+            child: Text(
+              error,
+              style: const TextStyle(color: Colors.red),
+            ),
           ),
         TextButton(
           onPressed: widget.onToggle,
-          child: const Text('¿No tienes cuenta? Regístrate'),
-        )
+          child: const Text(
+            '¿No tienes cuenta? Regístrate',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
       ],
     );
   }

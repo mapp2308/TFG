@@ -2,7 +2,7 @@
     package="com.example.motor_es">
 
     <application
-        android:label="motor_es"
+        android:label="MotorEs"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
