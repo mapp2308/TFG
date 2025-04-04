@@ -6,14 +6,14 @@ import 'package:motor_es/widgets/widget_evento.dart';
 
 const Color rojoEvento = Color(0xFFE53935);
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class EventosScreen extends StatefulWidget {
+  const EventosScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenScreenState();
+  State<EventosScreen> createState() => _EventosScreenScreenState();
 }
 
-class _HomeScreenScreenState extends State<HomeScreen> {
+class _EventosScreenScreenState extends State<EventosScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -42,16 +42,47 @@ class _HomeScreenScreenState extends State<HomeScreen> {
     }
   }
 
-  Stream<List<DocumentSnapshot>> obtenerEventosPorIds(List<String> ids) {
+  Stream<List<DocumentSnapshot>> obtenerEventosPorIds(
+    List<String> ids, {
+    bool soloFuturos = false,
+    bool ordenarPorFechaAsc = false,
+  }) {
     if (ids.isEmpty) return Stream.value([]);
+
     return _firestore
         .collection('eventos')
         .where(FieldPath.documentId, whereIn: ids)
         .snapshots()
-        .map((snap) => snap.docs);
+        .map((snap) {
+      List<DocumentSnapshot> eventos = snap.docs;
+
+      if (soloFuturos) {
+        final ahora = DateTime.now();
+        eventos = eventos.where((doc) {
+          final fecha = (doc['fecha'] as Timestamp).toDate();
+          return fecha.isAfter(ahora);
+        }).toList();
+      }
+
+      if (ordenarPorFechaAsc) {
+        eventos.sort((a, b) {
+          final fechaA = (a['fecha'] as Timestamp).toDate();
+          final fechaB = (b['fecha'] as Timestamp).toDate();
+          return fechaA.compareTo(fechaB);
+        });
+      }
+
+      return eventos;
+    });
   }
 
-  Widget seccionEventos(String titulo, IconData icono, List<String> ids) {
+  Widget seccionEventos(
+    String titulo,
+    IconData icono,
+    List<String> ids, {
+    bool soloFuturos = false,
+    bool ordenarPorFechaAsc = false,
+  }) {
     final textColor = Theme.of(context).textTheme.bodyMedium?.color;
 
     return Expanded(
@@ -79,7 +110,11 @@ class _HomeScreenScreenState extends State<HomeScreen> {
           // Lista con scroll propio
           Expanded(
             child: StreamBuilder<List<DocumentSnapshot>>(
-              stream: obtenerEventosPorIds(ids),
+              stream: obtenerEventosPorIds(
+                ids,
+                soloFuturos: soloFuturos,
+                ordenarPorFechaAsc: ordenarPorFechaAsc,
+              ),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -130,9 +165,15 @@ class _HomeScreenScreenState extends State<HomeScreen> {
           color: backgroundColor,
           child: Column(
             children: [
-              seccionEventos("Eventos que asistirás", Icons.event_available, asistirIds),
-              const SizedBox(height: 10),
-              seccionEventos("Eventos favoritos", Icons.favorite, favoritosIds),
+              seccionEventos(
+                "Eventos que asistirás",
+                Icons.event_available,
+                asistirIds,
+                soloFuturos: true,
+                ordenarPorFechaAsc: true,
+              ),
+               const SizedBox(height: 10),
+              seccionEventos("Eventos favoritos", Icons.favorite, favoritosIds,ordenarPorFechaAsc: true),
             ],
           ),
         ),

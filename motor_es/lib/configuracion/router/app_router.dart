@@ -3,8 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:motor_es/screens/acceso/login.dart';
 import 'package:motor_es/screens/admin/prueba.dart';
 import 'package:motor_es/screens/user/ajustes.dart';
-import 'package:motor_es/screens/user/home_screen.dart';
+import 'package:motor_es/screens/user/eventos.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:motor_es/screens/user/home.dart';
 
 Future<GoRouter> createAppRouter() async {
   final user = FirebaseAuth.instance.currentUser;
@@ -27,7 +28,11 @@ Future<GoRouter> createAppRouter() async {
       ),
       GoRoute(
         path: '/user/home',
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => const PantallaPrincipal(),
+      ),
+      GoRoute(
+        path: '/user/events',
+        builder: (context, state) => const EventosScreen(),
       ),
       GoRoute(
         path: '/admin/home',
