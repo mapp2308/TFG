@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:motor_es/screens/acceso/login.dart';
 import 'package:motor_es/screens/admin/prueba.dart';
 import 'package:motor_es/screens/user/ajustes.dart';
-import 'package:motor_es/screens/user/eventos.dart';
+import 'package:motor_es/screens/user/eventos_listas/eventos.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:motor_es/screens/user/home.dart';
 

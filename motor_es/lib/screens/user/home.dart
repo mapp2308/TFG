@@ -24,9 +24,7 @@ class PantallaPrincipal extends ConsumerWidget {
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 20),
 
-              // 🔸 Esto hace que el grid se centre verticalmente
               Expanded(
                 child: Center(
                   child: GridView.count(
@@ -36,8 +34,8 @@ class PantallaPrincipal extends ConsumerWidget {
                     mainAxisSpacing: 16,
                     children: const [
                       _OpcionInicio(titulo: 'Tus Eventos', imagen: 'assets/Eventos.png'),
-                      _OpcionInicio(titulo: 'Buscar Eventos', imagen: 'assets/Ajustes.png'),
-                      _OpcionInicio(titulo: 'Cerca de ti', imagen: 'assets/Eventos.png'),
+                      _OpcionInicio(titulo: 'Buscar Eventos', imagen: 'assets/Buscar.png'),
+                      _OpcionInicio(titulo: 'Cerca de ti', imagen: 'assets/Cerca.png'),
                       _OpcionInicio(titulo: 'Ajustes', imagen: 'assets/Ajustes.png'),
                     ],
                   ),

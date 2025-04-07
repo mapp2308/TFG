@@ -29,6 +29,8 @@ flutter:
   assets:
     - assets/Eventos.png
     - assets/Ajustes.png
+    - assets/Buscar.png
+    - assets/Cerca.png
 
 
 flutter_icons:
