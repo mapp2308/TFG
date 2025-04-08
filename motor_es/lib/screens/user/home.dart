@@ -71,6 +71,8 @@ class _OpcionInicio extends StatelessWidget {
             context.go('/user/events');
           } else if (titulo == 'Ajustes') {
             context.go('/user/settings');
+          } else if (titulo == 'Buscar Eventos') {
+            context.go('/user/search');
           }
         },
         borderRadius: BorderRadius.circular(20),

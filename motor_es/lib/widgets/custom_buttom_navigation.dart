@@ -11,25 +11,29 @@ class CustomBottomNavigation extends StatefulWidget {
 class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
   final List<String> _routes = [
     '/user/home',
-    '/user/events',  // Nueva ruta agregada
+    '/user/events',
+    '/user/search', // ← Añadido aquí
     '/user/settings',
   ];
 
   final List<IconData> _selectedIcons = [
     Icons.home,
-    Icons.event,       // Ícono activo para eventos
+    Icons.event,
+    Icons.search, // ← Ícono lupa activo
     Icons.settings,
   ];
 
   final List<IconData> _unselectedIcons = [
     Icons.home_outlined,
-    Icons.event_outlined, // Ícono inactivo para eventos
+    Icons.event_outlined,
+    Icons.search_outlined, // ← Ícono lupa inactivo
     Icons.settings_outlined,
   ];
 
   final List<String> _labels = [
     'Inicio',
     'Eventos',
+    'Buscar', // ← Etiqueta para búsqueda
     'Settings',
   ];
 
