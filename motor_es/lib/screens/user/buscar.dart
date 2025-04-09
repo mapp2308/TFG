@@ -125,90 +125,116 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
         ? '${DateFormat('dd/MM/yyyy').format(startDate!)} - ${DateFormat('dd/MM/yyyy').format(endDate!)}'
         : 'Selecciona un rango de fechas';
 
-    showModalBottomSheet(
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    showGeneralDialog(
       context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-              left: 16,
-              right: 16,
-              top: 16),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildDropdown(
-                  label: 'Creado por (admin)',
-                  value: selectedAdminUid,
-                  options: adminUsers.map((admin) {
-                    return {
-                      'label': admin['nombre'] ?? 'Admin sin nombre',
-                      'value': admin['uid']!,
-                    };
-                  }).toList(),
-                  onChanged: (value) => setState(() => selectedAdminUid = value),
-                ),
-                const SizedBox(height: 12),
-                _buildDropdown(
-                  label: 'Tipo de vehículo',
-                  value: selectedVehicleType,
-                  options: vehicleTypes,
-                  onChanged: (value) => setState(() => selectedVehicleType = value),
-                ),
-                const SizedBox(height: 12),
-                _buildDropdown(
-                  label: 'Tipo de evento',
-                  value: selectedEventType,
-                  options: eventTypes,
-                  onChanged: (value) => setState(() => selectedEventType = value),
-                ),
-                const SizedBox(height: 12),
-                TextButton.icon(
-                  onPressed: _pickDateRange,
-                  icon: const Icon(Icons.date_range, color: rojo),
-                  label: Text(dateRangeText, style: const TextStyle(color: rojo)),
-                ),
-                const SizedBox(height: 12),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    _filterEvents();
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.search),
-                  label: const Text("Aplicar filtros"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+      barrierDismissible: true,
+      barrierLabel: 'Filtrar',
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (_, __, ___) => const SizedBox.shrink(),
+      transitionBuilder: (context, anim1, anim2, _) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, -1),
+            end: Offset.zero,
+          ).animate(CurvedAnimation(parent: anim1, curve: Curves.easeOut)),
+          child: SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Material(
+                color: isDarkMode ? Colors.grey[900] : Colors.white,
+                elevation: 10,
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 16),
+                  padding: const EdgeInsets.all(16),
+                  width: MediaQuery.of(context).size.width * 0.95,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildDropdown(
+                          label: 'Creado por (admin)',
+                          value: selectedAdminUid,
+                          options: adminUsers.map((admin) {
+                            return {
+                              'label': admin['nombre'] ?? 'Admin sin nombre',
+                              'value': admin['uid']!,
+                            };
+                          }).toList(),
+                          onChanged: (value) => setState(() => selectedAdminUid = value),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildDropdown(
+                          label: 'Tipo de vehículo',
+                          value: selectedVehicleType,
+                          options: vehicleTypes,
+                          onChanged: (value) => setState(() => selectedVehicleType = value),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildDropdown(
+                          label: 'Tipo de evento',
+                          value: selectedEventType,
+                          options: eventTypes,
+                          onChanged: (value) => setState(() => selectedEventType = value),
+                        ),
+                        const SizedBox(height: 12),
+                        TextButton.icon(
+                          onPressed: _pickDateRange,
+                          icon: const Icon(Icons.date_range, color: rojo),
+                          label: Text(dateRangeText, style: const TextStyle(color: rojo)),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _filterEvents();
+                                Navigator.of(context).pop();
+                              },
+                              icon: const Icon(Icons.search, color: Colors.white),
+                              label: const Text("Aplicar filtros", style: TextStyle(color: Colors.white)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  selectedAdminUid = null;
+                                  selectedVehicleType = null;
+                                  selectedEventType = null;
+                                  startDate = null;
+                                  endDate = null;
+                                });
+                                _filterEvents();
+                                Navigator.of(context).pop();
+                              },
+                              icon: const Icon(Icons.clear, color: Colors.white),
+                              label: const Text("Limpiar filtros", style: TextStyle(color: Colors.white)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: rojo,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      selectedAdminUid = null;
-                      selectedVehicleType = null;
-                      selectedEventType = null;
-                      startDate = null;
-                      endDate = null;
-                    });
-                    _filterEvents();
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.clear),
-                  label: const Text("Limpiar filtros"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: rojo,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
+              ),
             ),
           ),
         );
