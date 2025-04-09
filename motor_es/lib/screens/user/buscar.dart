@@ -1,8 +1,10 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:motor_es/widgets/custom_buttom_navigation.dart';
 import 'package:motor_es/widgets/widget_evento.dart';
+
+const Color rojo = Color(0xFFE53935);
 
 class EventFilterScreen extends StatefulWidget {
   const EventFilterScreen({super.key});
@@ -40,7 +42,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   void initState() {
     super.initState();
     _loadAdmins();
-    _filterEvents(); // carga inicial
+    _filterEvents();
   }
 
   Future<void> _loadAdmins() async {
@@ -57,11 +59,10 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
           'nombre': (data['nombreUsuario'] ?? data['nombre'] ?? data['email'] ?? 'Admin sin nombre').toString(),
         };
       }).toList();
-
     });
   }
 
-Future<void> _filterEvents() async {
+  Future<void> _filterEvents() async {
     CollectionReference eventosRef = FirebaseFirestore.instance.collection('eventos');
     Query<Map<String, dynamic>> query = eventosRef as Query<Map<String, dynamic>>;
 
@@ -92,16 +93,15 @@ Future<void> _filterEvents() async {
         filteredEvents = snapshot.docs;
       });
     } on FirebaseException catch (e) {
-    if (e.code == 'failed-precondition') {
-      // Índice faltante → mostrar mensaje útil
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Falta un índice para esta combinación de filtros. Revísalo en Firebase."),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-    } else {
-      rethrow;
+      if (e.code == 'failed-precondition') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Falta un índice para esta combinación de filtros. Revísalo en Firebase."),
+            backgroundColor: rojo,
+          ),
+        );
+      } else {
+        rethrow;
       }
     }
   }
@@ -150,10 +150,8 @@ Future<void> _filterEvents() async {
                       'value': admin['uid']!,
                     };
                   }).toList(),
-
                   onChanged: (value) => setState(() => selectedAdminUid = value),
                 ),
-
                 const SizedBox(height: 12),
                 _buildDropdown(
                   label: 'Tipo de vehículo',
@@ -171,8 +169,8 @@ Future<void> _filterEvents() async {
                 const SizedBox(height: 12),
                 TextButton.icon(
                   onPressed: _pickDateRange,
-                  icon: const Icon(Icons.date_range, color: Colors.red),
-                  label: Text(dateRangeText, style: const TextStyle(color: Colors.red)),
+                  icon: const Icon(Icons.date_range, color: rojo),
+                  label: Text(dateRangeText, style: const TextStyle(color: rojo)),
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton.icon(
@@ -204,7 +202,7 @@ Future<void> _filterEvents() async {
                   icon: const Icon(Icons.clear),
                   label: const Text("Limpiar filtros"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
+                    backgroundColor: rojo,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
@@ -242,29 +240,44 @@ Future<void> _filterEvents() async {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Buscar eventos'),
-        backgroundColor: Colors.redAccent,
-        actions: [
-          IconButton(
-            onPressed: _openFilterModal,
-            icon: const Icon(Icons.filter_alt),
-            tooltip: 'Filtrar eventos',
-          ),
-        ],
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Buscar Eventos',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            TextButton.icon(
+              onPressed: _openFilterModal,
+              icon: const Icon(Icons.filter_alt, color: Colors.white),
+              label: const Text("Filtrar", style: TextStyle(color: Colors.white)),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                backgroundColor: rojo,
+              ),
+            ),
+          ],
+        ),
       ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text('Resultados:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
           Expanded(
             child: filteredEvents.isEmpty
-                ? const Center(child: Text('No hay eventos que coincidan con los filtros.'))
+                ? Center(
+                    child: Text(
+                      'No hay eventos que coincidan con los filtros.',
+                      style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+                    ),
+                  )
                 : ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemCount: filteredEvents.length,
