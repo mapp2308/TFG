@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:motor_es/widgets/custom_buttom_navigation.dart';
@@ -61,49 +61,47 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     });
   }
 
-  Future<void> _filterEvents() async {
+Future<void> _filterEvents() async {
+    CollectionReference eventosRef = FirebaseFirestore.instance.collection('eventos');
+    Query<Map<String, dynamic>> query = eventosRef as Query<Map<String, dynamic>>;
+
+    if (selectedAdminUid != null && selectedAdminUid!.isNotEmpty) {
+      query = query.where('creadoPor', isEqualTo: selectedAdminUid);
+    }
+
+    if (selectedVehicleType != null && selectedVehicleType!.isNotEmpty) {
+      query = query.where('vehiculo', isEqualTo: selectedVehicleType);
+    }
+
+    if (selectedEventType != null && selectedEventType!.isNotEmpty) {
+      query = query.where('tipo', isEqualTo: selectedEventType);
+    }
+
+    bool aplicarRangoFecha = startDate != null && endDate != null;
+
+    if (aplicarRangoFecha) {
+      query = query
+          .where('fecha', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate!))
+          .where('fecha', isLessThanOrEqualTo: Timestamp.fromDate(endDate!))
+          .orderBy('fecha');
+    }
+
     try {
-      Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-          .collection('eventos')
-          .orderBy('fecha', descending: false); // ¡obligatorio para filtros por fecha!
-  
-      // Filtro por creadoPor
-      if (selectedAdminUid?.isNotEmpty == true) {
-        query = query.where('creadoPor', isEqualTo: selectedAdminUid);
-      }
-  
-      // Filtro por tipo de vehículo
-      if (selectedVehicleType?.isNotEmpty == true) {
-        query = query.where('vehiculo', isEqualTo: selectedVehicleType);
-      }
-  
-      // Filtro por tipo de evento
-      if (selectedEventType?.isNotEmpty == true) {
-        query = query.where('tipo', isEqualTo: selectedEventType);
-      }
-  
-      // Filtro por fecha (rango)
-      if (startDate != null && endDate != null) {
-        query = query
-            .where('fecha', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate!))
-            .where('fecha', isLessThanOrEqualTo: Timestamp.fromDate(endDate!));
-      }
-  
       final snapshot = await query.get();
       setState(() {
         filteredEvents = snapshot.docs;
       });
     } on FirebaseException catch (e) {
-      if (e.code == 'failed-precondition') {
-        // Índice faltante → mostrar mensaje útil
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Falta un índice para esta combinación de filtros. Revísalo en Firebase."),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-      } else {
-        rethrow;
+    if (e.code == 'failed-precondition') {
+      // Índice faltante → mostrar mensaje útil
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Falta un índice para esta combinación de filtros. Revísalo en Firebase."),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } else {
+      rethrow;
       }
     }
   }
