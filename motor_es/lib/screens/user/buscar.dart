@@ -107,10 +107,34 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   }
 
   Future<void> _pickDateRange() async {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2023),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: isDarkMode
+              ? ThemeData.dark().copyWith(
+                  colorScheme: const ColorScheme.dark(
+                    primary: Colors.white,
+                    onPrimary: Colors.black,
+                    surface: Colors.grey,
+                    onSurface: Colors.white,
+                  ),
+                )
+              : ThemeData.light().copyWith(
+                  colorScheme: const ColorScheme.light(
+                    primary: Colors.black,
+                    onPrimary: Colors.white,
+                    surface: Colors.white,
+                    onSurface: Colors.black,
+                  ),
+                  dialogBackgroundColor: Colors.white,
+                ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() {
