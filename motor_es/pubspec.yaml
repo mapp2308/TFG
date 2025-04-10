@@ -17,6 +17,7 @@ dependencies:
   go_router: ^6.5.9
   intl: ^0.20.2
   shared_preferences: ^2.2.2
+  geocoding: ^2.1.0
 
 dev_dependencies:
   flutter_test:
