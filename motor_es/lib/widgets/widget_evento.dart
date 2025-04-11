@@ -13,10 +13,21 @@ class EventoCard extends StatelessWidget {
     final String descripcion = evento['descripcion'] ?? '';
     final Timestamp fechaTimestamp = evento['fecha'];
     final DateTime fecha = fechaTimestamp.toDate();
+    final String tipo = evento['tipo'] ?? 'otro';
 
     const meses = [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+      'enero',
+      'febrero',
+      'marzo',
+      'abril',
+      'mayo',
+      'junio',
+      'julio',
+      'agosto',
+      'septiembre',
+      'octubre',
+      'noviembre',
+      'diciembre'
     ];
 
     final String dia = fecha.day.toString();
@@ -24,6 +35,27 @@ class EventoCard extends StatelessWidget {
 
     final textColor = Theme.of(context).textTheme.bodyMedium?.color;
     final subtleColor = Theme.of(context).textTheme.bodySmall?.color;
+
+    IconData getIconForTipo(String tipo) {
+      switch (tipo.toLowerCase()) {
+        case 'exposición':
+          return Icons.museum;
+        case 'curso':
+          return Icons.school;
+        case 'carrera':
+          return Icons.flag;
+        case 'rally':
+          return Icons.sports_motorsports;
+        case 'exhibición':
+          return Icons.directions_car;
+        case 'juntada':
+          return Icons.groups;
+        case 'ruta':
+          return Icons.alt_route;
+        default:
+          return Icons.event;
+      }
+    }
 
     return GestureDetector(
       onTap: () {
@@ -90,6 +122,12 @@ class EventoCard extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(width: 12),
+              Icon(
+                getIconForTipo(tipo),
+                size: 28,
+                color: subtleColor,
               ),
             ],
           ),
