@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
@@ -18,17 +19,24 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
   String direccion = 'Cargando...';
   late Future<void> _localeInit;
 
+  bool esFavorito = false;
+  bool asistira = false;
+
+  final user = FirebaseAuth.instance.currentUser;
+
   @override
   void initState() {
     super.initState();
     _localeInit = initializeDateFormatting('es_ES', null);
     _loadNombreAdmin();
     _loadDireccion();
+    _loadEstadosDesdeUsuario(); // Aquí usamos la colección "user"
   }
 
   Future<void> _loadNombreAdmin() async {
     final creadoPor = widget.evento['creadoPor'];
-    final userDoc = await FirebaseFirestore.instance.collection('user').doc(creadoPor).get();
+    final userDoc =
+        await FirebaseFirestore.instance.collection('user').doc(creadoPor).get();
 
     setState(() {
       nombreAdmin = userDoc.data()?['nombreUsuario'] ??
@@ -43,11 +51,12 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
     if (data['ubicacion'] != null && data['ubicacion'] is GeoPoint) {
       final GeoPoint geo = data['ubicacion'];
       try {
-        final placemarks = await placemarkFromCoordinates(geo.latitude, geo.longitude);
+        final placemarks =
+            await placemarkFromCoordinates(geo.latitude, geo.longitude);
         final placemark = placemarks.first;
         setState(() {
           direccion =
-              '${placemark.street?.isNotEmpty == true ? placemark.street! + ", " : ""}'
+              '${placemark.street?.isNotEmpty == true ? "${placemark.street!}, " : ""}'
               '${placemark.locality ?? ''}, ${placemark.country ?? ''}';
         });
       } catch (e) {
@@ -60,6 +69,51 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
         direccion = 'Ubicación no especificada';
       });
     }
+  }
+
+  Future<void> _loadEstadosDesdeUsuario() async {
+    if (user == null) return;
+
+    final userRef = FirebaseFirestore.instance.collection('user').doc(user!.uid);
+    final userSnap = await userRef.get();
+
+    final List favoritos = userSnap.data()?['favoritos'] ?? [];
+    final List asistir = userSnap.data()?['asistir'] ?? [];
+
+    setState(() {
+      esFavorito = favoritos.contains(widget.evento.id);
+      asistira = asistir.contains(widget.evento.id);
+    });
+  }
+
+  Future<void> _toggleFavorito() async {
+    if (user == null) return;
+
+    final userRef = FirebaseFirestore.instance.collection('user').doc(user!.uid);
+    final idEvento = widget.evento.id;
+
+    await userRef.update({
+      'favoritos': esFavorito
+          ? FieldValue.arrayRemove([idEvento])
+          : FieldValue.arrayUnion([idEvento]),
+    });
+
+    setState(() => esFavorito = !esFavorito);
+  }
+
+  Future<void> _toggleAsistir() async {
+    if (user == null) return;
+
+    final userRef = FirebaseFirestore.instance.collection('user').doc(user!.uid);
+    final idEvento = widget.evento.id;
+
+    await userRef.update({
+      'asistir': asistira
+          ? FieldValue.arrayRemove([idEvento])
+          : FieldValue.arrayUnion([idEvento]),
+    });
+
+    setState(() => asistira = !asistira);
   }
 
   @override
@@ -82,7 +136,8 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
         final String tipo = data['tipo'] ?? 'Sin tipo';
         final String vehiculo = data['vehiculo'] ?? 'Sin vehículo';
         final Timestamp fechaRaw = data['fecha'];
-        final String fecha = DateFormat('dd MMMM yyyy, HH:mm', 'es_ES').format(fechaRaw.toDate());
+        final String fecha =
+            DateFormat('dd MMMM yyyy, HH:mm', 'es_ES').format(fechaRaw.toDate());
         final String creador = nombreAdmin ?? 'Cargando...';
 
         return SingleChildScrollView(
@@ -113,17 +168,51 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
                     ),
                   ),
                 const SizedBox(height: 20),
-                Text(
-                  nombre,
-                  style: textTheme.bodyLarge?.copyWith(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
+
+                // Título + botones a la derecha
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        nombre,
+                        style: textTheme.bodyLarge?.copyWith(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        esFavorito ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                      tooltip: esFavorito
+                          ? 'Quitar de favoritos'
+                          : 'Añadir a favoritos',
+                      onPressed: _toggleFavorito,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        asistira
+                            ? Icons.event_available
+                            : Icons.event_available_outlined,
+                        color: Colors.green,
+                      ),
+                      tooltip: asistira
+                          ? 'Cancelar asistencia'
+                          : 'Marcar asistencia',
+                      onPressed: _toggleAsistir,
+                    ),
+                  ],
                 ),
+
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.calendar_today, size: 18, color: isDark ? Colors.white : Colors.black),
+                    Icon(Icons.calendar_today,
+                        size: 18, color: isDark ? Colors.white : Colors.black),
                     const SizedBox(width: 6),
                     Text(
                       fecha,
@@ -132,10 +221,7 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
                   ],
                 ),
                 Divider(
-                  height: 32,
-                  thickness: 1.2,
-                  color: theme.dividerColor,
-                ),
+                    height: 32, thickness: 1.2, color: theme.dividerColor),
                 _infoRow(
                   context: context,
                   icon: Icons.description,

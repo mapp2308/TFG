@@ -17,16 +17,38 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> cambiarContrasena() async {
+  try {
     final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: user.email!);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Se ha enviado un enlace para restablecer tu contraseña"),
-        backgroundColor: Colors.green,
-      ));
+
+    if (user == null || user.email == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No se pudo obtener el correo del usuario."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
     }
+
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: user.email!);
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Se ha enviado un enlace para restablecer tu contraseña."),
+        backgroundColor: Colors.green,
+      ),
+    );
+  } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Error al enviar correo: $e"),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
 
   Future<void> cerrarSesion() async {
     await FirebaseAuth.instance.signOut();
@@ -202,9 +224,10 @@ Future<void> mostrarDatosUsuario() async {
               ),
               const SizedBox(height: 20),
 
-              const ListTile(
-                leading: Icon(Icons.lock, color: Colors.white),
-                title: Text("Cambiar contraseña", style: TextStyle(color: Colors.white)),
+              ListTile(
+                leading: const Icon(Icons.lock, color: Colors.white),
+                title: const Text("Cambiar contraseña", style: TextStyle(color: Colors.white)),
+                onTap: cambiarContrasena,
               ),
               const Divider(color: Colors.white24),
 

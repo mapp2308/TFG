@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:motor_es/screens/user/eventos_listas/eventos_lista.dart';
+
 const Color rojoEvento = Color(0xFFE53935);
 
 class SeccionEventos extends StatelessWidget {
@@ -16,6 +17,8 @@ class SeccionEventos extends StatelessWidget {
     bool ordenarPorFechaAsc,
   }) streamBuilder;
 
+  final void Function(DocumentSnapshot)? onTapEvento; // 🟢 Nuevo parámetro
+
   const SeccionEventos({
     super.key,
     required this.titulo,
@@ -25,6 +28,7 @@ class SeccionEventos extends StatelessWidget {
     required this.streamBuilder,
     this.soloFuturos = false,
     this.ordenarPorFechaAsc = false,
+    this.onTapEvento,
   });
 
   @override
@@ -33,7 +37,6 @@ class SeccionEventos extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Encabezado
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
@@ -66,13 +69,13 @@ class SeccionEventos extends StatelessWidget {
               ],
             ),
           ),
-          // Lista de eventos
           Expanded(
             child: EventosLista(
               ids: ids,
               soloFuturos: soloFuturos,
               ordenarPorFechaAsc: ordenarPorFechaAsc,
               streamBuilder: streamBuilder,
+              onTapEvento: onTapEvento, // 🟢 Pasamos callback
             ),
           ),
         ],

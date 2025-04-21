@@ -4,8 +4,8 @@ import 'package:motor_es/screens/acceso/login.dart';
 import 'package:motor_es/screens/admin/prueba.dart';
 import 'package:motor_es/screens/user/ajustes.dart';
 import 'package:motor_es/screens/user/buscar.dart';
-import 'package:motor_es/screens/user/eventos_listas/eventos.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:motor_es/screens/user/eventos_listas/eventos.dart';
 import 'package:motor_es/screens/user/home.dart';
 
 Future<GoRouter> createAppRouter() async {
@@ -46,6 +46,11 @@ Future<GoRouter> createAppRouter() async {
       GoRoute(
         path: '/user/search',
         builder: (context, state) => const EventFilterScreen(),
+      ),
+      GoRoute(
+        path: '/user/events',
+        name: EventosScreen.name,
+        builder: (context, state) => const EventosScreen(),
       ),
     ],
   );

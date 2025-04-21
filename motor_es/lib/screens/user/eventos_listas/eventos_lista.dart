@@ -12,12 +12,15 @@ class EventosLista extends StatelessWidget {
     bool ordenarPorFechaAsc,
   }) streamBuilder;
 
+  final void Function(DocumentSnapshot)? onTapEvento; // 🟢 Nuevo parámetro
+
   const EventosLista({
     super.key,
     required this.ids,
     required this.streamBuilder,
     this.soloFuturos = false,
     this.ordenarPorFechaAsc = false,
+    this.onTapEvento,
   });
 
   @override
@@ -51,8 +54,14 @@ class EventosLista extends StatelessWidget {
 
         return ListView.builder(
           itemCount: eventos.length,
-          itemBuilder: (context, index) =>
-              EventoCard(evento: eventos[index]),
+          itemBuilder: (context, index) {
+            final evento = eventos[index];
+
+            return GestureDetector(
+              onTap: () => onTapEvento?.call(evento), // 🟢 Ejecuta callback
+              child: EventoCard(evento: evento),
+            );
+          },
         );
       },
     );
