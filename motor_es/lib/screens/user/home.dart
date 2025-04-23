@@ -24,7 +24,6 @@ class PantallaPrincipal extends ConsumerWidget {
                   color: Colors.white,
                 ),
               ),
-
               Expanded(
                 child: Center(
                   child: GridView.count(
@@ -50,7 +49,6 @@ class PantallaPrincipal extends ConsumerWidget {
   }
 }
 
-
 class _OpcionInicio extends StatelessWidget {
   final String titulo;
   final String imagen;
@@ -73,6 +71,8 @@ class _OpcionInicio extends StatelessWidget {
             context.go('/user/settings');
           } else if (titulo == 'Buscar Eventos') {
             context.go('/user/search');
+          } else if (titulo == 'Cerca de ti') {
+            context.go('/user/maps');
           }
         },
         borderRadius: BorderRadius.circular(20),

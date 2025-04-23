@@ -18,6 +18,8 @@ dependencies:
   intl: ^0.20.2
   shared_preferences: ^2.2.2
   geocoding: ^2.1.0
+  google_maps_flutter: ^2.12.1
+  geolocator: ^14.0.0
 
 dev_dependencies:
   flutter_test:

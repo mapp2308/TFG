@@ -12,28 +12,32 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
   final List<String> _routes = [
     '/user/home',
     '/user/events',
-    '/user/search', // ← Añadido aquí
+    '/user/search',
+    '/user/maps',       // ← NUEVA RUTA
     '/user/settings',
   ];
 
   final List<IconData> _selectedIcons = [
     Icons.home,
     Icons.event,
-    Icons.search, // ← Ícono lupa activo
+    Icons.search,
+    Icons.map,           // ← ÍCONO ACTIVO
     Icons.settings,
   ];
 
   final List<IconData> _unselectedIcons = [
     Icons.home_outlined,
     Icons.event_outlined,
-    Icons.search_outlined, // ← Ícono lupa inactivo
+    Icons.search_outlined,
+    Icons.map_outlined,  // ← ÍCONO INACTIVO
     Icons.settings_outlined,
   ];
 
   final List<String> _labels = [
     'Inicio',
     'Eventos',
-    'Buscar', // ← Etiqueta para búsqueda
+    'Buscar',
+    'Cerca',             // ← ETIQUETA
     'Settings',
   ];
 

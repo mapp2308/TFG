@@ -129,8 +129,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     onPrimary: Colors.white,
                     surface: Colors.white,
                     onSurface: Colors.black,
-                  ),
-                  dialogBackgroundColor: Colors.white,
+                  ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
                 ),
           child: child!,
         );

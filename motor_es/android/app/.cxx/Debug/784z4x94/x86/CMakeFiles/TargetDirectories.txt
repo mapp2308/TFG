@@ -1,0 +1,2 @@
+C:/Users/Practico-3/Desktop/TFG/motor_es/android/app/.cxx/Debug/784z4x94/x86/CMakeFiles/edit_cache.dir
+C:/Users/Practico-3/Desktop/TFG/motor_es/android/app/.cxx/Debug/784z4x94/x86/CMakeFiles/rebuild_cache.dir

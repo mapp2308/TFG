@@ -38,7 +38,7 @@ class EventoCard extends StatelessWidget {
 
     IconData getIconForTipo(String tipo) {
       switch (tipo.toLowerCase()) {
-        case 'exposición':
+        case 'exposicion':
           return Icons.museum;
         case 'curso':
           return Icons.school;

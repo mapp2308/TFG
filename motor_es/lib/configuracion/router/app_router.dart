@@ -7,6 +7,7 @@ import 'package:motor_es/screens/user/buscar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:motor_es/screens/user/eventos_listas/eventos.dart';
 import 'package:motor_es/screens/user/home.dart';
+import 'package:motor_es/screens/user/mapa.dart';
 
 Future<GoRouter> createAppRouter() async {
   final user = FirebaseAuth.instance.currentUser;
@@ -51,6 +52,10 @@ Future<GoRouter> createAppRouter() async {
         path: '/user/events',
         name: EventosScreen.name,
         builder: (context, state) => const EventosScreen(),
+      ),
+      GoRoute(
+        path: '/user/maps',
+        builder: (context, state) => const EventMapScreen(),
       ),
     ],
   );
