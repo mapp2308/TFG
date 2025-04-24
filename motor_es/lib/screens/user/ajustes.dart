@@ -219,7 +219,7 @@ Future<void> mostrarDatosUsuario() async {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Ajustes",
+                "Ajustes y Ayuda",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(height: 20),
@@ -238,18 +238,20 @@ Future<void> mostrarDatosUsuario() async {
               ),
               const Divider(color: Colors.white24),
 
-              ListTile(
-                leading: const Icon(Icons.help_outline, color: Colors.white),
-                title: const Text("¿Cómo subir mi evento?", style: TextStyle(color: Colors.white)),
-                onTap: mostrarAyudaSubirEvento,
-              ),
-              const Divider(color: Colors.white24),
+              
 
               SwitchListTile(
                 title: const Text("Tema oscuro", style: TextStyle(color: Colors.white)),
                 secondary: const Icon(Icons.dark_mode, color: Colors.white),
                 value: isDarkMode,
                 onChanged: (_) => ref.read(themeModeProvider.notifier).toggleTheme(),
+              ),
+              const Divider(color: Colors.white24),
+
+              ListTile(
+                leading: const Icon(Icons.help_outline, color: Colors.white),
+                title: const Text("¿Cómo subir mi evento?", style: TextStyle(color: Colors.white)),
+                onTap: mostrarAyudaSubirEvento,
               ),
               const Divider(color: Colors.white24),
 

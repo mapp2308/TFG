@@ -78,14 +78,17 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
       query = query.where('tipo', isEqualTo: selectedEventType);
     }
 
-    bool aplicarRangoFecha = startDate != null && endDate != null;
+    final Timestamp now = Timestamp.now();
 
-    if (aplicarRangoFecha) {
+    if (startDate != null && endDate != null) {
       query = query
-          .where('fecha', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate!))
-          .where('fecha', isLessThanOrEqualTo: Timestamp.fromDate(endDate!))
-          .orderBy('fecha');
+          .where('fecha', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate!.isBefore(DateTime.now()) ? DateTime.now() : startDate!))
+          .where('fecha', isLessThanOrEqualTo: Timestamp.fromDate(endDate!));
+    } else {
+      query = query.where('fecha', isGreaterThanOrEqualTo: now);
     }
+
+    query = query.orderBy('fecha', descending: false);
 
     try {
       final snapshot = await query.get();
@@ -129,7 +132,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     onPrimary: Colors.white,
                     surface: Colors.white,
                     onSurface: Colors.black,
-                  ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+                  ),
                 ),
           child: child!,
         );
@@ -176,7 +179,6 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                   width: MediaQuery.of(context).size.width * 0.95,
                   child: SingleChildScrollView(
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildDropdown(
@@ -223,9 +225,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                               label: const Text("Aplicar filtros", style: TextStyle(color: Colors.white)),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -245,14 +245,11 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                               label: const Text("Limpiar filtros", style: TextStyle(color: Colors.white)),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: rojo,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -309,8 +306,8 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 backgroundColor: rojo,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
             ),
           ],

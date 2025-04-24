@@ -8,6 +8,13 @@ class PantallaPrincipal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final opciones = const [
+      {'titulo': 'Mis Eventos', 'imagen': 'assets/Eventos.png'},
+      {'titulo': 'Buscar Eventos', 'imagen': 'assets/Buscar.png'},
+      {'titulo': 'Cerca de ti', 'imagen': 'assets/Cerca.png'},
+      {'titulo': 'Ajustes', 'imagen': 'assets/Ajustes.png'},
+    ];
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -24,6 +31,7 @@ class PantallaPrincipal extends ConsumerWidget {
                   color: Colors.white,
                 ),
               ),
+              
               Expanded(
                 child: Center(
                   child: GridView.count(
@@ -31,12 +39,9 @@ class PantallaPrincipal extends ConsumerWidget {
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
-                    children: const [
-                      _OpcionInicio(titulo: 'Tus Eventos', imagen: 'assets/Eventos.png'),
-                      _OpcionInicio(titulo: 'Buscar Eventos', imagen: 'assets/Buscar.png'),
-                      _OpcionInicio(titulo: 'Cerca de ti', imagen: 'assets/Cerca.png'),
-                      _OpcionInicio(titulo: 'Ajustes', imagen: 'assets/Ajustes.png'),
-                    ],
+                    children: opciones.map((opcion) {
+                      return _OpcionSoloImagen(imagen: opcion['imagen']!, titulo: opcion['titulo']!);
+                    }).toList(),
                   ),
                 ),
               ),
@@ -49,58 +54,48 @@ class PantallaPrincipal extends ConsumerWidget {
   }
 }
 
-class _OpcionInicio extends StatelessWidget {
-  final String titulo;
+class _OpcionSoloImagen extends StatelessWidget {
   final String imagen;
+  final String titulo;
 
-  const _OpcionInicio({
-    required this.titulo,
+  const _OpcionSoloImagen({
     required this.imagen,
+    required this.titulo,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 6,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () {
-          if (titulo == 'Tus Eventos') {
-            context.go('/user/events');
-          } else if (titulo == 'Ajustes') {
-            context.go('/user/settings');
-          } else if (titulo == 'Buscar Eventos') {
-            context.go('/user/search');
-          } else if (titulo == 'Cerca de ti') {
-            context.go('/user/maps');
+          switch (titulo) {
+            case 'Mis Eventos':
+              context.go('/user/events');
+              break;
+            case 'Buscar Eventos':
+              context.go('/user/search');
+              break;
+            case 'Cerca de ti':
+              context.go('/user/maps');
+              break;
+            case 'Ajustes':
+              context.go('/user/settings');
+              break;
           }
         },
-        borderRadius: BorderRadius.circular(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    imagen,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),
-                ),
-              ),
+        borderRadius: BorderRadius.circular(16),
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              imagen,
+              width: 150,
+              height: 150,
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 8),
-            Text(
-              titulo,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 12),
-          ],
+          ),
         ),
       ),
     );

@@ -13,7 +13,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
     '/user/home',
     '/user/events',
     '/user/search',
-    '/user/maps',       // ← NUEVA RUTA
+    '/user/maps',       
     '/user/settings',
   ];
 
@@ -21,7 +21,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
     Icons.home,
     Icons.event,
     Icons.search,
-    Icons.map,           // ← ÍCONO ACTIVO
+    Icons.map,           
     Icons.settings,
   ];
 
@@ -29,16 +29,16 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
     Icons.home_outlined,
     Icons.event_outlined,
     Icons.search_outlined,
-    Icons.map_outlined,  // ← ÍCONO INACTIVO
+    Icons.map_outlined,  
     Icons.settings_outlined,
   ];
 
   final List<String> _labels = [
     'Inicio',
-    'Eventos',
+    'Mis Eventos',
     'Buscar',
-    'Cerca',             // ← ETIQUETA
-    'Settings',
+    'Cerca',             
+    'Ajustes',
   ];
 
   int _currentIndex = 0;
