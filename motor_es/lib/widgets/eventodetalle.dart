@@ -131,6 +131,7 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
         final cardColor = theme.cardColor;
         final isDark = theme.brightness == Brightness.dark;
 
+       final String ciudad = data['ciudad'] ?? 'Sin ciudad';
         final String nombre = data['nombre'] ?? 'Evento';
         final String descripcion = data['descripcion'] ?? 'Sin descripción';
         final String tipo = data['tipo'] ?? 'Sin tipo';
@@ -169,9 +170,8 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
                   ),
                 const SizedBox(height: 20),
 
-                // Título + botones a la derecha
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Text(
@@ -180,30 +180,31 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
                         ),
-                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                        maxLines: null,
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(
-                        esFavorito ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.red,
-                      ),
-                      tooltip: esFavorito
-                          ? 'Quitar de favoritos'
-                          : 'Añadir a favoritos',
-                      onPressed: _toggleFavorito,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        asistira
-                            ? Icons.event_available
-                            : Icons.event_available_outlined,
-                        color: Colors.green,
-                      ),
-                      tooltip: asistira
-                          ? 'Cancelar asistencia'
-                          : 'Marcar asistencia',
-                      onPressed: _toggleAsistir,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            esFavorito ? Icons.favorite : Icons.favorite_border,
+                            color: Colors.red,
+                          ),
+                          tooltip: esFavorito ? 'Quitar de favoritos' : 'Añadir a favoritos',
+                          onPressed: _toggleFavorito,
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            asistira ? Icons.event_available : Icons.event_available_outlined,
+                            color: Colors.green,
+                          ),
+                          tooltip: asistira ? 'Cancelar asistencia' : 'Marcar asistencia',
+                          onPressed: _toggleAsistir,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -227,6 +228,12 @@ class _EventoDetalleWidgetState extends State<EventoDetalleWidget> {
                   icon: Icons.description,
                   label: "Descripción",
                   value: descripcion,
+                ),
+                _infoRow(
+                  context: context,
+                  icon: Icons.location_city,
+                  label: "Ciudad",
+                  value: ciudad,
                 ),
                 _infoRow(
                   context: context,

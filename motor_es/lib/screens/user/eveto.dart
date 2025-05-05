@@ -62,15 +62,23 @@ class _DetalleEventoScreenState extends State<DetalleEventoScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         titleSpacing: 0,
+        toolbarHeight: 72,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            data['nombre'] ?? 'Evento',
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data['nombre'] ?? 'Evento',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
         actions: [
@@ -120,9 +128,9 @@ class _DetalleEventoScreenState extends State<DetalleEventoScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "Deja tu valoración aquí",
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: rojo,
@@ -179,14 +187,13 @@ class _DetalleEventoScreenState extends State<DetalleEventoScreen> {
 
         if (resenas.isEmpty) {
           return const Text(
-          "No hay reseñas todavía",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: rojo,
-          ),
+            "No hay reseñas todavía",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: rojo,
+            ),
           );
-          
         }
 
         return ListView.builder(
