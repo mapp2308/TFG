@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motor_es/configuracion/router/app_router.dart';
+import 'package:motor_es/configuracion/scrapping/scrapping.dart';
 import 'package:motor_es/configuracion/theme/theme.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  await ScraperEventos().ejecutarScraping();
+  
   final router = await createAppRouter();
   runApp(
     ProviderScope(
       child: MyApp(router: router),
     ),
   );
-  
 }
 
 class MyApp extends ConsumerWidget {
@@ -34,7 +36,6 @@ class MyApp extends ConsumerWidget {
       themeMode: themeMode,
       routerConfig: router,
 
-      // 🌞 TEMA CLARO
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: Colors.grey[900],
@@ -55,7 +56,6 @@ class MyApp extends ConsumerWidget {
         ),
       ),
 
-      // 🌚 TEMA OSCURO
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.grey[900],
