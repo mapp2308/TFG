@@ -69,8 +69,8 @@ class ScraperEventos {
             'nombre': nombre,
             'descripcion': descripcion,
             'fecha': Timestamp.fromDate(fecha),
-            'tipo': 'exposicion',
-            'vehiculo': 'moto',
+            'tipo': 'mixto',
+            'vehiculo': 'coche',
             'ciudad': ciudad,
             'ubicacion': geo,
           });

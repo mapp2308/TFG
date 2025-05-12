@@ -4,18 +4,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motor_es/configuracion/theme/theme.dart';
-import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
+import 'package:motor_es/widgets/admin/custom_btttom_naviation_admin.dart';
 
 const Color rojoEvento = Color(0xFFE53935);
 
-class SettingsScreen extends ConsumerStatefulWidget {
-  const SettingsScreen({super.key});
+class SettingsScreenAdmin extends ConsumerStatefulWidget {
+  const SettingsScreenAdmin({super.key});
 
   @override
-  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreenAdmin> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreenAdmin> {
   Future<void> cambiarContrasena() async {
   try {
     final user = FirebaseAuth.instance.currentUser;
@@ -95,73 +95,73 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-Future<void> mostrarDatosUsuario() async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) return;
+  Future<void> mostrarDatosUsuario() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
 
-  final docUser = await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
-  if (!mounted) return;
+    final QuerySnapshot eventosCreadosSnap = await FirebaseFirestore.instance
+        .collection('eventos')
+        .where('creadoPor', isEqualTo: user.uid)
+        .get();
 
-  final favoritos = List<String>.from(docUser.data()?['favoritos'] ?? []);
-  final asistir = List<String>.from(docUser.data()?['asistir'] ?? []);
+    final eventosCreados = eventosCreadosSnap.docs.length;
 
-  final eventosFavoritos = favoritos.length;
-  final eventosAsistidos = asistir.length;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (_) {
-      return Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text("Tu cuenta",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
-            ),
-            const SizedBox(height: 16),
-            Divider(color: isDarkMode ? Colors.white24 : Colors.black26),
-
-            Text("Correo", style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
-            const SizedBox(height: 4),
-            Text(user.email ?? "Correo no disponible", style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
-            const SizedBox(height: 16),
-
-            Text("Eventos asistidos", style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
-            const SizedBox(height: 4),
-            Text("$eventosAsistidos", style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
-            const SizedBox(height: 16),
-
-            Text("Eventos favoritos", style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
-            const SizedBox(height: 4),
-            Text("$eventosFavoritos", style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
-            const SizedBox(height: 24),
-
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: eliminarCuenta,
-                icon: const Icon(Icons.delete, color: Colors.white),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: rojoEvento,
-                  foregroundColor: Colors.white,
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  "Tu cuenta",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
                 ),
-                label: const Text("Eliminar cuenta"),
               ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
+              const SizedBox(height: 16),
+              Divider(color: isDarkMode ? Colors.white24 : Colors.black26),
+
+              Text("Correo", style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
+              const SizedBox(height: 4),
+              Text(user.email ?? "Correo no disponible", style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
+              const SizedBox(height: 16),
+
+              Text("Eventos creados", style: TextStyle(fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black)),
+              const SizedBox(height: 4),
+              Text("$eventosCreados", style: TextStyle(color: isDarkMode ? Colors.white : Colors.black)),
+              const SizedBox(height: 24),
+
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: eliminarCuenta,
+                  icon: const Icon(Icons.delete, color: Colors.white),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: rojoEvento,
+                    foregroundColor: Colors.white,
+                  ),
+                  label: const Text("Eliminar cuenta"),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 
 
   void mostrarAyudaSubirEvento() {
@@ -248,13 +248,6 @@ Future<void> mostrarDatosUsuario() async {
               ),
               const Divider(color: Colors.white24),
 
-              ListTile(
-                leading: const Icon(Icons.help_outline, color: Colors.white),
-                title: const Text("¿Cómo subir mi evento?", style: TextStyle(color: Colors.white)),
-                onTap: mostrarAyudaSubirEvento,
-              ),
-              const Divider(color: Colors.white24),
-
               const Spacer(),
 
               Center(
@@ -274,7 +267,7 @@ Future<void> mostrarDatosUsuario() async {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigation(),
+      bottomNavigationBar: const CustomBottomNavigationAdmin(),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:motor_es/widgets/custom_buttom_navigation.dart';
-import 'package:motor_es/widgets/eventodetalle.dart';
+import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
+import 'package:motor_es/widgets/user/eventodetalle.dart';
 import 'package:motor_es/widgets/resena_card.dart';
 
 const Color rojo = Color(0xFFE53935);

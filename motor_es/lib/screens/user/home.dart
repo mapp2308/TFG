@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:motor_es/widgets/custom_buttom_navigation.dart';
+import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
 
 class PantallaPrincipal extends ConsumerWidget {
   const PantallaPrincipal({super.key});
@@ -24,7 +24,7 @@ class PantallaPrincipal extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Bienvenidos",
+                "Bienvenido",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:motor_es/widgets/custom_buttom_navigation.dart';
+import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
 import 'package:motor_es/widgets/widget_evento.dart';
 
 const Color rojo = Color(0xFFE53935);
@@ -17,9 +17,12 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   List<Map<String, String>> adminUsers = [];
   String? selectedAdminUid;
   String? selectedVehicleType;
-  String? selectedEventType;
   DateTime? startDate;
   DateTime? endDate;
+
+  List<String> selectedEventTypes = [];
+  List<String> selectedCities = [];
+  List<String> availableCities = [];
 
   List<DocumentSnapshot> filteredEvents = [];
 
@@ -29,19 +32,21 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   ];
 
   final eventTypes = [
-    {'label': 'Exposición', 'value': 'exposicion'},
-    {'label': 'Curso', 'value': 'curso'},
-    {'label': 'Carrera', 'value': 'carrera'},
-    {'label': 'Rally', 'value': 'rally'},
-    {'label': 'Exhibición', 'value': 'exhibicion'},
-    {'label': 'Juntada', 'value': 'juntada'},
-    {'label': 'Ruta', 'value': 'ruta'},
+    {'label': 'Exposición', 'value': 'Exposición'},
+    {'label': 'Curso', 'value': 'Curso'},
+    {'label': 'Carrera', 'value': 'Carrera'},
+    {'label': 'Rally', 'value': 'Rally'},
+    {'label': 'Exhibición', 'value': 'Exhibición'},
+    {'label': 'Juntada', 'value': 'Juntada'},
+    {'label': 'Ruta', 'value': 'Ruta'},
+    {'label': 'Mixto', 'value': 'mixto'},
   ];
 
   @override
   void initState() {
     super.initState();
     _loadAdmins();
+    _loadCities();
     _filterEvents();
   }
 
@@ -62,6 +67,20 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     });
   }
 
+  Future<void> _loadCities() async {
+    final snapshot = await FirebaseFirestore.instance.collection('eventos').get();
+
+    final cities = snapshot.docs
+        .map((doc) => doc['ciudad']?.toString())
+        .where((city) => city != null && city.isNotEmpty)
+        .toSet()
+        .toList();
+
+    setState(() {
+      availableCities = cities.cast<String>();
+    });
+  }
+
   Future<void> _filterEvents() async {
     CollectionReference eventosRef = FirebaseFirestore.instance.collection('eventos');
     Query<Map<String, dynamic>> query = eventosRef as Query<Map<String, dynamic>>;
@@ -74,8 +93,12 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
       query = query.where('vehiculo', isEqualTo: selectedVehicleType);
     }
 
-    if (selectedEventType != null && selectedEventType!.isNotEmpty) {
-      query = query.where('tipo', isEqualTo: selectedEventType);
+    if (selectedEventTypes.isNotEmpty) {
+      query = query.where('tipo', whereIn: selectedEventTypes);
+    }
+
+    if (selectedCities.isNotEmpty) {
+      query = query.where('ciudad', whereIn: selectedCities);
     }
 
     final Timestamp now = Timestamp.now();
@@ -166,101 +189,169 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
             begin: const Offset(0, -1),
             end: Offset.zero,
           ).animate(CurvedAnimation(parent: anim1, curve: Curves.easeOut)),
-          child: SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Material(
-                color: isDarkMode ? Colors.grey[900] : Colors.white,
-                elevation: 10,
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  margin: const EdgeInsets.only(top: 16),
-                  padding: const EdgeInsets.all(16),
-                  width: MediaQuery.of(context).size.width * 0.95,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildDropdown(
-                          label: 'Creado por (admin)',
-                          value: selectedAdminUid,
-                          options: adminUsers.map((admin) {
-                            return {
-                              'label': admin['nombre'] ?? 'Admin sin nombre',
-                              'value': admin['uid']!,
-                            };
-                          }).toList(),
-                          onChanged: (value) => setState(() => selectedAdminUid = value),
-                        ),
-                        const SizedBox(height: 12),
-                        _buildDropdown(
-                          label: 'Tipo de vehículo',
-                          value: selectedVehicleType,
-                          options: vehicleTypes,
-                          onChanged: (value) => setState(() => selectedVehicleType = value),
-                        ),
-                        const SizedBox(height: 12),
-                        _buildDropdown(
-                          label: 'Tipo de evento',
-                          value: selectedEventType,
-                          options: eventTypes,
-                          onChanged: (value) => setState(() => selectedEventType = value),
-                        ),
-                        const SizedBox(height: 12),
-                        TextButton.icon(
-                          onPressed: _pickDateRange,
-                          icon: const Icon(Icons.date_range, color: rojo),
-                          label: Text(dateRangeText, style: const TextStyle(color: rojo)),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              return SafeArea(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Material(
+                    color: isDarkMode ? Colors.grey[900] : Colors.white,
+                    elevation: 10,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 16),
+                      padding: const EdgeInsets.all(16),
+                      width: MediaQuery.of(context).size.width * 0.95,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                _filterEvents();
-                                Navigator.of(context).pop();
+                            _buildDropdown(
+                              label: 'Creado por (admin)',
+                              value: selectedAdminUid,
+                              options: adminUsers.map((admin) {
+                                return {
+                                  'label': admin['nombre'] ?? 'Admin sin nombre',
+                                  'value': admin['uid']!,
+                                };
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() => selectedAdminUid = value);
+                                setModalState(() {});
                               },
-                              icon: const Icon(Icons.search, color: Colors.white),
-                              label: const Text("Aplicar filtros", style: TextStyle(color: Colors.white)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                            const SizedBox(height: 12),
+                            _buildDropdown(
+                              label: 'Tipo de vehículo',
+                              value: selectedVehicleType,
+                              options: vehicleTypes,
+                              onChanged: (value) {
+                                setState(() => selectedVehicleType = value);
+                                setModalState(() {});
+                              },
+                            ),
+                            const SizedBox(height: 12),
+
+                            // Tipo de evento
+                            _buildMultiSelectTile(
+                              title: 'Tipo de evento',
+                              options: eventTypes.map((e) => e['value']!).toList(),
+                              labels: eventTypes.map((e) => e['label']!).toList(),
+                              selectedValues: selectedEventTypes,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (selectedEventTypes.contains(value)) {
+                                    selectedEventTypes.remove(value);
+                                  } else {
+                                    selectedEventTypes.add(value);
+                                  }
+                                });
+                                setModalState(() {});
+                              },
+                            ),
+                            const SizedBox(height: 12),
+
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Theme(
+                                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                                child: ExpansionTile(
+                                  tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+                                  childrenPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  title: const Text('Ciudad'),
+                                  trailing: const Icon(Icons.arrow_drop_down),
+                                  children: [
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 4,
+                                      children: availableCities.map((city) {
+                                        final isSelected = selectedCities.contains(city);
+                                        return FilterChip(
+                                          label: Text(city),
+                                          selected: isSelected,
+                                          onSelected: (selected) {
+                                            setState(() {
+                                              if (selected) {
+                                                selectedCities.add(city);
+                                              } else {
+                                                selectedCities.remove(city);
+                                              }
+                                            });
+                                            // Forzar reconstrucción del modal para que se vea reflejado de inmediato
+                                            (context as Element).markNeedsBuild();
+                                          },
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            const SizedBox(width: 16),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                setState(() {
-                                  selectedAdminUid = null;
-                                  selectedVehicleType = null;
-                                  selectedEventType = null;
-                                  startDate = null;
-                                  endDate = null;
-                                });
-                                _filterEvents();
-                                Navigator.of(context).pop();
-                              },
-                              icon: const Icon(Icons.clear, color: Colors.white),
-                              label: const Text("Limpiar filtros", style: TextStyle(color: Colors.white)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: rojo,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              ),
+
+                            const SizedBox(height: 12),
+
+                            TextButton.icon(
+                              onPressed: _pickDateRange,
+                              icon: const Icon(Icons.date_range, color: rojo),
+                              label: Text(dateRangeText, style: const TextStyle(color: rojo)),
+                            ),
+                            const SizedBox(height: 12),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    _filterEvents();
+                                    Navigator.of(context).pop();
+                                  },
+                                  icon: const Icon(Icons.search, color: Colors.white),
+                                  label: const Text("Aplicar filtros", style: TextStyle(color: Colors.white)),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    setState(() {
+                                      selectedAdminUid = null;
+                                      selectedVehicleType = null;
+                                      selectedEventTypes.clear();
+                                      selectedCities.clear();
+                                      startDate = null;
+                                      endDate = null;
+                                    });
+                                    _filterEvents();
+                                    Navigator.of(context).pop();
+                                  },
+                                  icon: const Icon(Icons.clear, color: Colors.white),
+                                  label: const Text("Limpiar filtros", style: TextStyle(color: Colors.white)),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: rojo,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         );
       },
     );
   }
+
 
   Widget _buildDropdown({
     required String label,
@@ -281,6 +372,41 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
         );
       }).toList(),
       onChanged: onChanged,
+    );
+  }
+
+  Widget _buildMultiSelectTile({
+    required String title,
+    required List<String> options,
+    required List<String> labels,
+    required List<String> selectedValues,
+    required void Function(String) onChanged,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+          childrenPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          title: Text(title),
+          trailing: const Icon(Icons.arrow_drop_down),
+          children: List.generate(options.length, (index) {
+            final value = options[index];
+            final label = labels[index];
+            final isSelected = selectedValues.contains(value);
+            return CheckboxListTile(
+              title: Text(label),
+              value: isSelected,
+              controlAffinity: ListTileControlAffinity.leading,
+              onChanged: (_) => onChanged(value),
+            );
+          }),
+        ),
+      ),
     );
   }
 

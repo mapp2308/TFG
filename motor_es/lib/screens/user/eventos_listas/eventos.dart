@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:motor_es/screens/user/eventos_listas/eventos_lista.dart';
 import 'package:motor_es/screens/user/eventos_listas/seccion_eventos.dart';
-import 'package:motor_es/widgets/custom_buttom_navigation.dart';
-import 'package:motor_es/screens/user/eveto.dart';
+import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
+import 'package:motor_es/screens/user/evento.dart';
 
 const Color rojoEvento = Color(0xFFE53935);
 

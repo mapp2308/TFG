@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:motor_es/screens/user/eveto.dart';
+import 'package:motor_es/screens/user/evento.dart';
 
 class EventoCard extends StatelessWidget {
   final DocumentSnapshot evento;

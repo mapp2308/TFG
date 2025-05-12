@@ -84,7 +84,68 @@
         { "fieldPath": "vehiculo", "order": "ASCENDING" },
         { "fieldPath": "fecha", "order": "ASCENDING" }
       ]
-    }
+    },
+    {
+      "collectionGroup": "eventos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ciudad", "order": "ASCENDING" },
+        { "fieldPath": "fecha", "order": "ASCENDING" }
+      ]
+    },
+    
+    {
+      "collectionGroup": "eventos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ciudad", "order": "ASCENDING" },
+        { "fieldPath": "fecha", "order": "ASCENDING" },
+        { "fieldPath": "tipo", "order": "ASCENDING" }
+        
+      ]
+    },
+    {
+      "collectionGroup": "eventos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ciudad", "order": "ASCENDING" },
+        { "fieldPath": "fecha", "order": "ASCENDING" },
+        { "fieldPath": "vehiculo", "order": "ASCENDING" }
+        
+      ]
+    },
+    {
+      "collectionGroup": "eventos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ciudad", "order": "ASCENDING" },
+        { "fieldPath": "fecha", "order": "ASCENDING" },
+        { "fieldPath": "creadoPor", "order": "ASCENDING" }
+        
+      ]
+    },
+    {
+      "collectionGroup": "eventos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ciudad", "order": "ASCENDING" },
+        { "fieldPath": "fecha", "order": "ASCENDING" },
+        { "fieldPath": "tipo", "order": "ASCENDING" },
+        { "fieldPath": "vehiculo", "order": "ASCENDING" }
+        
+      ]
+    },
+    {
+      "collectionGroup": "eventos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "fecha", "order": "ASCENDING" },
+        { "fieldPath": "ciudad", "order": "ASCENDING" },
+        { "fieldPath": "creadoPor", "order": "ASCENDING" },
+        { "fieldPath": "tipo", "order": "ASCENDING" },
+        { "fieldPath": "vehiculo", "order": "ASCENDING" }
+      ]
+    }    
   ],
   "fieldOverrides": []
 }

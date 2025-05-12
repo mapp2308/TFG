@@ -36,6 +36,7 @@ flutter:
     - assets/Ajustes.png
     - assets/Buscar.png
     - assets/Cerca.png
+    - assets/Nuevo.png
 
 
 flutter_icons:
