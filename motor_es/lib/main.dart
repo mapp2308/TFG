@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motor_es/configuracion/router/app_router.dart';
@@ -35,6 +36,18 @@ class MyApp extends ConsumerWidget {
       title: 'MotorEs',
       themeMode: themeMode,
       routerConfig: router,
+
+      // 🟢 Localización necesaria para DatePicker, TimePicker y demás widgets
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+
+      supportedLocales: const [
+        Locale('es', 'ES'), // Español
+        Locale('en', 'US'), // Inglés (por defecto)
+      ],
 
       theme: ThemeData(
         brightness: Brightness.light,

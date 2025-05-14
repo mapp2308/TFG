@@ -97,9 +97,6 @@ class _OpcionSoloImagen extends StatelessWidget {
               case 'Mis Eventos':
                 context.go('/admin/events');
                 break;
-              case 'Buscar Eventos':
-                context.go('/admin/form');
-                break;
               case 'Ajustes':
                 context.go('/admin/settings');
                 break;

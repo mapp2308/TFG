@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motor_es/screens/acceso/login.dart';
 import 'package:motor_es/screens/admin/ajustes_admin.dart';
+import 'package:motor_es/screens/admin/editar_eventos.dart';
+import 'package:motor_es/screens/admin/evento_admin.dart';
+import 'package:motor_es/screens/admin/eventos_admin.dart';
 import 'package:motor_es/screens/admin/home_admin.dart';
 import 'package:motor_es/screens/user/ajustes.dart';
 import 'package:motor_es/screens/user/buscar.dart';
@@ -61,6 +64,24 @@ Future<GoRouter> createAppRouter() async {
       GoRoute(
         path: '/admin/home',
         builder: (context, state) => const PantallaPrincipalAdmin(),
+      ),
+      GoRoute(
+        path: '/admin/event',
+        builder: (context, state) {
+          final evento = state.extra as DocumentSnapshot;
+          return DetalleEventoAdminScreen(evento: evento);
+        },
+      ),
+      GoRoute(
+        path: '/admin/edit',
+        builder: (context, state) {
+          final evento = state.extra as DocumentSnapshot;
+          return EditarEventoScreen(evento: evento);
+        },
+      ),
+      GoRoute(
+        path: '/admin/events',
+        builder: (context, state) => const MisEventosCreadosScreen(),
       ),
     ],
   );

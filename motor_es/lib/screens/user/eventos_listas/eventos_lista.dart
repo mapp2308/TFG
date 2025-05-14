@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:motor_es/widgets/widget_evento.dart';
+import 'package:motor_es/widgets/user/widget_evento.dart';
 
 class EventosLista extends StatelessWidget {
   final List<String> ids;
