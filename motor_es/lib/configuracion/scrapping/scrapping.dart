@@ -13,7 +13,6 @@ class ScraperEventos {
     try {
       final response = await http.get(Uri.parse(urlEventos));
       if (response.statusCode != 200) {
-        print('❌ Error al acceder a la web: ${response.statusCode}');
         return;
       }
 
@@ -41,13 +40,11 @@ class ScraperEventos {
         }
 
         if (ul == null) {
-          print('⚠️ No se encontró info para "$nombre", se ignora');
           continue;
         }
 
         final parrafos = ul.querySelectorAll('li > p.mt-NewsDetail-articleBodyParagraph');
         if (parrafos.length < 3) {
-          print('⚠️ Evento "$nombre" incompleto, se ignora');
           continue;
         }
 
@@ -75,13 +72,11 @@ class ScraperEventos {
             'ubicacion': geo,
           });
 
-          print('✅ Evento guardado: $nombre');
         } else {
-          print('⏩ Evento ya existe: $nombre');
         }
       }
     } catch (e) {
-      print('⚠️ Error durante scraping: $e');
+      return;
     }
   }
 
@@ -133,7 +128,6 @@ class ScraperEventos {
         return GeoPoint(location['lat'], location['lng']);
       }
     } catch (e) {
-      print('⚠️ Error obteniendo coordenadas: $e');
     }
 
     return const GeoPoint(0.0, 0.0); // fallback
