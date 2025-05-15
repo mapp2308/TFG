@@ -20,6 +20,8 @@ class _EventoDetalleAdminWidgetState extends State<EventoDetalleAdminWidget> {
   String? nombreAdmin;
   String direccion = 'Cargando...';
   late Future<void> _localeInit;
+  int asistentes = 0;
+  int favoritos = 0;
 
   @override
   void initState() {
@@ -27,6 +29,7 @@ class _EventoDetalleAdminWidgetState extends State<EventoDetalleAdminWidget> {
     _localeInit = initializeDateFormatting('es_ES', null);
     _loadNombreAdmin();
     _loadDireccion();
+    _loadResumenUsuarios();
   }
 
   Future<void> _loadNombreAdmin() async {
@@ -67,9 +70,25 @@ class _EventoDetalleAdminWidgetState extends State<EventoDetalleAdminWidget> {
     }
   }
 
+  Future<void> _loadResumenUsuarios() async {
+    final asistentesSnap = await FirebaseFirestore.instance
+        .collection('user')
+        .where('asistir', arrayContains: widget.evento.id)
+        .get();
+
+    final favoritosSnap = await FirebaseFirestore.instance
+        .collection('user')
+        .where('favoritos', arrayContains: widget.evento.id)
+        .get();
+
+    setState(() {
+      asistentes = asistentesSnap.docs.length;
+      favoritos = favoritosSnap.docs.length;
+    });
+  }
+
   void _editarEvento(BuildContext context) {
     context.push('/admin/edit', extra: widget.evento);
-
   }
 
   void _eliminarEvento(BuildContext context) async {
@@ -197,7 +216,16 @@ class _EventoDetalleAdminWidgetState extends State<EventoDetalleAdminWidget> {
                     ),
                   ],
                 ),
-                Divider(height: 32, thickness: 1.2, color: theme.dividerColor),
+                const SizedBox(height: 12),
+                Text(
+                  "• $asistentes usuario(s) asistirá(n) \n• $favoritos lo tiene(n) como favorito",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: rojo,
+                  ),
+                ),
+                
                 _infoRow(
                   context: context,
                   icon: Icons.description,
