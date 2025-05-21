@@ -1,17 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
-import 'package:motor_es/screens/acceso/login.dart';
-import 'package:motor_es/screens/admin/ajustes_admin.dart';
-import 'package:motor_es/screens/admin/editar_eventos.dart';
-import 'package:motor_es/screens/admin/evento_admin.dart';
-import 'package:motor_es/screens/admin/eventos_admin.dart';
-import 'package:motor_es/screens/admin/home_admin.dart';
-import 'package:motor_es/screens/user/ajustes.dart';
-import 'package:motor_es/screens/user/buscar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:motor_es/screens/user/eventos_listas/eventos.dart';
-import 'package:motor_es/screens/user/home.dart';
-import 'package:motor_es/screens/user/mapa.dart';
+import 'package:motor_es/screens/screens.dart';
+
 
 Future<GoRouter> createAppRouter() async {
   final user = FirebaseAuth.instance.currentUser;
@@ -82,6 +73,10 @@ Future<GoRouter> createAppRouter() async {
       GoRoute(
         path: '/admin/events',
         builder: (context, state) => const MisEventosCreadosScreen(),
+      ),
+      GoRoute(
+        path: '/admin/form',
+        builder: (context, state) => const AddEventScreen(),
       ),
     ],
   );

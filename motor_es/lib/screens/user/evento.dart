@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
-import 'package:motor_es/widgets/user/eventodetalle.dart';
-import 'package:motor_es/widgets/resena_card.dart';
-
-const Color rojo = Color(0xFFE53935);
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:motor_es/widgets/widgets.dart';
 
 class DetalleEventoScreen extends StatefulWidget {
   final DocumentSnapshot evento;
@@ -52,6 +50,44 @@ class _DetalleEventoScreenState extends State<DetalleEventoScreen> {
         .snapshots();
   }
 
+  void mostrarModalCompartir(Map<String, dynamic> data) {
+    final fecha = (data['fecha'] as Timestamp?)?.toDate();
+    final fechaFormateada =
+        fecha != null ? DateFormat('dd/MM/yyyy HH:mm').format(fecha) : 'Sin fecha';
+    final mensaje = '''
+📍 Evento: ${data['nombre'] ?? ''}
+🗓 Fecha: $fechaFormateada
+🏙 Ciudad: ${data['ciudad'] ?? ''}
+
+Para encontrar más eventos, descarga MotorEs 🚗🔥
+''';
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Compartir evento"),
+        content: SelectableText(mensaje),
+        actions: [
+          TextButton.icon(
+            icon: const Icon(Icons.copy),
+            label: const Text("Copiar"),
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: mensaje));
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Texto copiado al portapapeles')),
+              );
+            },
+          ),
+          TextButton(
+            child: const Text("Cerrar"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final data = widget.evento.data() as Map<String, dynamic>;
@@ -85,11 +121,11 @@ class _DetalleEventoScreenState extends State<DetalleEventoScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: TextButton.icon(
-              onPressed: () {},
+              onPressed: () => mostrarModalCompartir(data),
               icon: const Icon(Icons.share, color: Colors.white),
               label: const Text("Compartir", style: TextStyle(color: Colors.white)),
               style: TextButton.styleFrom(
-                backgroundColor: rojo,
+                backgroundColor: Color(0xFFE53935),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
@@ -109,7 +145,7 @@ class _DetalleEventoScreenState extends State<DetalleEventoScreen> {
             Text(
               "Reseñas",
               style: theme.textTheme.titleLarge?.copyWith(
-                color: rojo,
+                color: Color(0xFFE53935),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -133,7 +169,7 @@ class _DetalleEventoScreenState extends State<DetalleEventoScreen> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: rojo,
+            color: Color(0xFFE53935),
           ),
         ),
         Row(
@@ -167,7 +203,7 @@ class _DetalleEventoScreenState extends State<DetalleEventoScreen> {
           icon: const Icon(Icons.send, color: Colors.white),
           label: const Text("Publicar"),
           style: ElevatedButton.styleFrom(
-            backgroundColor: rojo,
+            backgroundColor: Color(0xFFE53935),
             foregroundColor: Colors.white,
           ),
         ),
@@ -191,7 +227,7 @@ class _DetalleEventoScreenState extends State<DetalleEventoScreen> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: rojo,
+              color: Color(0xFFE53935),
             ),
           );
         }

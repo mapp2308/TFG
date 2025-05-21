@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:motor_es/screens/acceso/recupassword.dart';
-import 'package:motor_es/screens/acceso/register.dart';
+import 'package:motor_es/screens/screens.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

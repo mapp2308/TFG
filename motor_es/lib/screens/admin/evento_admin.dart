@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:motor_es/widgets/admin/custom_btttom_naviation_admin.dart';
-import 'package:motor_es/widgets/admin/eventodetalle_admin.dart';
-import 'package:motor_es/widgets/admin/usuario_card.dart';
-import 'package:motor_es/widgets/resena_card.dart';
+import 'package:motor_es/widgets/widgets.dart';
 
-const Color rojo = Color(0xFFE53935);
 
 class DetalleEventoAdminScreen extends StatelessWidget {
   final DocumentSnapshot evento;
@@ -97,7 +93,7 @@ class DetalleEventoAdminScreen extends StatelessWidget {
   Widget _buildToggleButton(String label, String value) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: vistaSeleccionada.value == value ? rojo : Colors.grey[700],
+        backgroundColor: vistaSeleccionada.value == value ? Color(0xFFE53935) : Colors.grey[700],
       ),
       onPressed: () {
         vistaSeleccionada.value = value;
@@ -122,7 +118,7 @@ class DetalleEventoAdminScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: rojo,
+              color: Color(0xFFE53935),
             ),
           );
         }
@@ -182,7 +178,7 @@ class DetalleEventoAdminScreen extends StatelessWidget {
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: rojo,
+              color: Color(0xFFE53935),
             ),
           );
         }

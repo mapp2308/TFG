@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motor_es/configuracion/theme/theme.dart';
-import 'package:motor_es/widgets/admin/custom_btttom_naviation_admin.dart';
+import 'package:motor_es/widgets/widgets.dart';
+
 
 const Color rojoEvento = Color(0xFFE53935);
 

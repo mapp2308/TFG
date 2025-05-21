@@ -4,9 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:motor_es/configuracion/theme/theme.dart';
-import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
-
-const Color rojoEvento = Color(0xFFE53935);
+import 'package:motor_es/widgets/widgets.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -150,7 +148,7 @@ Future<void> mostrarDatosUsuario() async {
                 onPressed: eliminarCuenta,
                 icon: const Icon(Icons.delete, color: Colors.white),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: rojoEvento,
+                  backgroundColor: Color(0xFFE53935),
                   foregroundColor: Colors.white,
                 ),
                 label: const Text("Eliminar cuenta"),
@@ -260,7 +258,7 @@ Future<void> mostrarDatosUsuario() async {
               Center(
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: rojoEvento,
+                    backgroundColor: Color(0xFFE53935),
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   ),

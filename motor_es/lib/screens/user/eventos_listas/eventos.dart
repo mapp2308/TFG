@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:motor_es/screens/user/eventos_listas/eventos_lista.dart';
-import 'package:motor_es/screens/user/eventos_listas/seccion_eventos.dart';
-import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
-import 'package:motor_es/screens/user/evento.dart';
-
-const Color rojoEvento = Color(0xFFE53935);
+import 'package:motor_es/screens/screens.dart';
+import 'package:motor_es/widgets/widgets.dart';
 
 class EventosScreen extends StatefulWidget {
   static const String name = 'eventos-screen';
@@ -152,7 +148,7 @@ class _EventosScreenScreenState extends State<EventosScreen> {
                                     verTodosTipo == "favoritos"
                                         ? Icons.favorite
                                         : Icons.event_available,
-                                    color: rojoEvento,
+                                    color: Color(0xFFE53935),
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
@@ -162,7 +158,7 @@ class _EventosScreenScreenState extends State<EventosScreen> {
                                     style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: rojoEvento,
+                                      color: Color(0xFFE53935),
                                     ),
                                   ),
                                 ],

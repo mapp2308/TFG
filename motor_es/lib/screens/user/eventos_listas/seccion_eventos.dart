@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:motor_es/screens/user/eventos_listas/eventos_lista.dart';
+import 'package:motor_es/screens/screens.dart';
 
-const Color rojoEvento = Color(0xFFE53935);
 
 class SeccionEventos extends StatelessWidget {
   final String titulo;
@@ -44,14 +43,14 @@ class SeccionEventos extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(icono, color: rojoEvento),
+                    Icon(icono, color: Color(0xFFE53935)),
                     const SizedBox(width: 8),
                     Text(
                       titulo,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: rojoEvento,
+                        color: Color(0xFFE53935),
                       ),
                     ),
                   ],
@@ -61,7 +60,7 @@ class SeccionEventos extends StatelessWidget {
                   child: const Text(
                     "Ver todos",
                     style: TextStyle(
-                      color: rojoEvento,
+                      color: Color(0xFFE53935),
                       fontWeight: FontWeight.w600,
                     ),
                   ),

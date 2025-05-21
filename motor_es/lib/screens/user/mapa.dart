@@ -3,7 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:motor_es/screens/user/evento.dart';
-import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
+import 'package:motor_es/widgets/widgets.dart';
 
 class EventMapScreen extends StatefulWidget {
   const EventMapScreen({super.key});

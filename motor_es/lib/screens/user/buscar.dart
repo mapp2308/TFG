@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:motor_es/widgets/user/custom_buttom_navigation.dart';
-import 'package:motor_es/widgets/user/widget_evento.dart';
-
-const Color rojo = Color(0xFFE53935);
+import 'package:motor_es/widgets/widgets.dart';
 
 class EventFilterScreen extends StatefulWidget {
   const EventFilterScreen({super.key});
@@ -32,13 +29,13 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   ];
 
   final eventTypes = [
-    {'label': 'Exposición', 'value': 'Exposición'},
-    {'label': 'Curso', 'value': 'Curso'},
-    {'label': 'Carrera', 'value': 'Carrera'},
-    {'label': 'Rally', 'value': 'Rally'},
-    {'label': 'Exhibición', 'value': 'Exhibición'},
-    {'label': 'Juntada', 'value': 'Juntada'},
-    {'label': 'Ruta', 'value': 'Ruta'},
+    {'label': 'Exposición', 'value': 'exposicion'},
+    {'label': 'Curso', 'value': 'curso'},
+    {'label': 'Carrera', 'value': 'carrera'},
+    {'label': 'Rally', 'value': 'rally'},
+    {'label': 'Exhibición', 'value': 'exhibicion'},
+    {'label': 'Juntada', 'value': 'juntada'},
+    {'label': 'Ruta', 'value': 'ruta'},
     {'label': 'Mixto', 'value': 'mixto'},
   ];
 
@@ -123,7 +120,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Falta un índice para esta combinación de filtros. Revísalo en Firebase."),
-            backgroundColor: rojo,
+            backgroundColor: Color(0xFFE53935),
           ),
         );
       } else {
@@ -295,8 +292,8 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
 
                             TextButton.icon(
                               onPressed: _pickDateRange,
-                              icon: const Icon(Icons.date_range, color: rojo),
-                              label: Text(dateRangeText, style: const TextStyle(color: rojo)),
+                              icon: const Icon(Icons.date_range, color: Color(0xFFE53935)),
+                              label: Text(dateRangeText, style: const TextStyle(color: Color(0xFFE53935))),
                             ),
                             const SizedBox(height: 12),
 
@@ -332,7 +329,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                                   icon: const Icon(Icons.clear, color: Colors.white),
                                   label: const Text("Limpiar filtros", style: TextStyle(color: Colors.white)),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: rojo,
+                                    backgroundColor: Color(0xFFE53935),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                   ),
                                 ),
@@ -432,7 +429,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                backgroundColor: rojo,
+                backgroundColor: Color(0xFFE53935),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
             ),

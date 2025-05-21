@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:motor_es/widgets/admin/custom_btttom_naviation_admin.dart';
-import 'package:motor_es/widgets/admin/widget_evento_admin.dart';
-
-const Color rojoEvento = Color(0xFFE53935);
+import 'package:motor_es/widgets/widgets.dart';
 
 class MisEventosCreadosScreen extends StatefulWidget {
   const MisEventosCreadosScreen({super.key});
@@ -76,7 +73,7 @@ class _MisEventosCreadosScreenState extends State<MisEventosCreadosScreen> {
             style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
-              color: rojoEvento,
+              color: Color(0xFFE53935),
             ),
           ),
         ),
@@ -132,7 +129,7 @@ class _MisEventosCreadosScreenState extends State<MisEventosCreadosScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.history, color: rojoEvento),
+                    const Icon(Icons.history, color: Color(0xFFE53935)),
                     const SizedBox(width: 10),
                     Text(
                       mostrarHistorial
@@ -141,7 +138,7 @@ class _MisEventosCreadosScreenState extends State<MisEventosCreadosScreen> {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: rojoEvento,
+                        color: Color(0xFFE53935),
                       ),
                     ),
                   ],

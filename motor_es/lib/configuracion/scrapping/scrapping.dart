@@ -7,7 +7,7 @@ import 'package:html/dom.dart';
 class ScraperEventos {
   static const String creadorID = 'pWqRiEXspfQLQX1v03zcg1lEzX42';
   static const String urlEventos = 'https://www.coches.net/noticias/calendario-de-eventos-motor-2025';
-  static const String apiKey = 'AIzaSyD08IKjkvYqAgjTcT_u6HBqrzRVjEn18eY'; // Sustituye
+  static const String apiKey = 'AIzaSyD08IKjkvYqAgjTcT_u6HBqrzRVjEn18eY'; 
 
   Future<void> ejecutarScraping() async {
     try {
@@ -128,6 +128,7 @@ class ScraperEventos {
         return GeoPoint(location['lat'], location['lng']);
       }
     } catch (e) {
+      
     }
 
     return const GeoPoint(0.0, 0.0); // fallback

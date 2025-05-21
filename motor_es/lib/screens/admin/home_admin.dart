@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:motor_es/widgets/admin/custom_btttom_naviation_admin.dart';
+import 'package:motor_es/widgets/widgets.dart';
 
 class PantallaPrincipalAdmin extends ConsumerWidget {
   const PantallaPrincipalAdmin({super.key});
